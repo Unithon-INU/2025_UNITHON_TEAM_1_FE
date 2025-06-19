@@ -213,11 +213,11 @@ const CommunityPost = () => {
   // Define categories array
   const categories = [
     { value: '', label: 'Select a category' },
-    { value: 'General', label: 'General Discussion' },
-    { value: 'Academic', label: 'Academic' },
-    { value: 'Events', label: 'Events' },
-    { value: 'Questions', label: 'Questions' },
-    { value: 'Announcements', label: 'Announcements' }
+    { value: 'Housing', label: 'Housing' },
+    { value: 'Jobs', label: 'Jobs' },
+    { value: 'Study', label: 'Study' },
+    { value: 'Social', label: 'Social' },
+    { value: 'Help', label: 'Help' }
   ];
 
   // Define canPost condition

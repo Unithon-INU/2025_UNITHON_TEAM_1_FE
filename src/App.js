@@ -56,7 +56,7 @@ function App() {
     <AuthProvider>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Router>
+        <Router basename="/2025_UNITHON_TEAM_1_FE">
           <AppContainer>
             <ContentContainer>
               <Routes>
@@ -68,10 +68,10 @@ function App() {
                 <Route path="/clubs/:id" element={<ClubsPost />} />
                 <Route path="/jobs" element={<Jobs />} />
                 <Route path="/jobs/:id" element={<JobsPostDetail />} />
-            <Route path="/mypage" element={<MyPage />} />
-            <Route path="/privacy-security" element={<PrivacySecurity />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+                <Route path="/mypage" element={<MyPage />} />
+                <Route path="/privacy-security" element={<PrivacySecurity />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
               </Routes>
             </ContentContainer>
             <BottomNavigation />
