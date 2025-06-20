@@ -339,7 +339,7 @@ const MyPage = () => {
     const fetchUserData = async () => {
       if (isLoggedIn && user && user.id) {
         try {
-          const response = await fetch(`http://43.203.125.32:8080/api/members/${user.id}`, {
+          const response = await fetch(`https://unithon1.shop/api/members/${user.id}`, {
             method: 'GET',
             headers: {
               'Content-Type': 'application/json',

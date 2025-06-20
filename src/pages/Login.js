@@ -237,7 +237,7 @@ const Login = () => {
     setError('');
   
     try {
-      const response = await fetch('http://43.203.125.32:8080/api/members/login', {
+      const response = await fetch('https://unithon1.shop/api/members/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

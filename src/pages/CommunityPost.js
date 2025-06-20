@@ -247,7 +247,7 @@ const CommunityPost = () => {
   useEffect(() => {
     const fetchUserNickname = async () => {
       try {
-        const response = await fetch('http://43.203.125.32:8080/api/members');
+        const response = await fetch('https://unithon1.shop/api/members');
         if (response.ok) {
           const userData = await response.json();
           if (userData && userData.length > 0) {

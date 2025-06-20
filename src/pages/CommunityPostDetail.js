@@ -390,7 +390,7 @@ Thanks in advance for any suggestions!`,
   if (comment.trim()) {
     try {
       // Get current user nickname
-      const userResponse = await fetch('http://43.203.125.32:8080/api/members');
+      const userResponse = await fetch('https://unithon1.shop/api/members');
       let currentUserNickname = 'User';
       
       if (userResponse.ok) {

@@ -347,7 +347,7 @@ const Register = () => {
 
     try {
       // Connect to your backend API
-      const response = await fetch('http://43.203.125.32:8080/api/members/signup', {
+      const response = await fetch('https://unithon1.shop/api/members/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
