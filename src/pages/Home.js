@@ -13,6 +13,12 @@ const Header = styled.div`
   justify-content: center;
   align-items: center;
   margin-bottom: 30px;
+  gap: 12px;
+`;
+
+const LogoImage = styled.img`
+  width: 40px;
+  height: auto;
 `;
 
 const Title = styled.h1`
@@ -257,6 +263,7 @@ const Home = () => {
   return (
     <Container>
       <Header>
+        <LogoImage src="/assets/images/logo.png" alt="UniBus Logo" />
         <Title>Home</Title>
       </Header>
 
