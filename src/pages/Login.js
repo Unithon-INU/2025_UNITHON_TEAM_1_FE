@@ -32,6 +32,12 @@ const Logo = styled.div`
   margin-bottom: 40px;
 `;
 
+const LogoImage = styled.img`
+  width: 120px;
+  height: auto;
+  margin-bottom: 10px;
+`;
+
 const LogoText = styled.h1`
   font-size: 32px;
   font-weight: 700;
@@ -293,6 +299,7 @@ const Login = () => {
     <Container>
       <LoginCard>
         <Logo>
+          <LogoImage src="/assets/images/logo.png" alt="UniBus Logo" />
           <LogoText>UniBus</LogoText>
           <Subtitle>Welcome back! Please sign in to your account.</Subtitle>
         </Logo>

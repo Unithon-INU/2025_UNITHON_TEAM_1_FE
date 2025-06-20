@@ -35,6 +35,12 @@ const Logo = styled.div`
   margin-bottom: 30px;
 `;
 
+const LogoImage = styled.img`
+  width: 120px;
+  height: auto;
+  margin-bottom: 10px;
+`;
+
 const LogoText = styled.h1`
   font-size: 32px;
   font-weight: 700;
@@ -401,6 +407,7 @@ const Register = () => {
     <Container>
       <RegisterCard>
         <Logo>
+          <LogoImage src="/assets/images/logo.png" alt="UniBus Logo" />
           <LogoText>UniBus</LogoText>
           <Subtitle>Create your account for Incheon National University.</Subtitle>
         </Logo>
