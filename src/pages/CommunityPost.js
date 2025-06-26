@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../contexts/AuthContext';
@@ -201,9 +201,7 @@ const CommunityPost = () => {
   const { user, token, refreshTokenFunc } = useAuth();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [category, setCategory] = useState('GENERAL');
-  // Remove the hardcoded userNickname state
-  // const [userNickname, setUserNickname] = useState('User');
+  const [category, setCategory] = useState('GENERAL'); // Fix: Use single category value
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const categories = [
@@ -224,8 +222,7 @@ const CommunityPost = () => {
   const handlePost = async () => {
     if (!canPost) return;
     
-    // 토큰 가져오기 통일
-    const authToken = token || localStorage.getItem('token');
+    let authToken = token || localStorage.getItem('token');
     
     // 토큰 유효성 검사 추가
     if (!user || !authToken) {
@@ -281,25 +278,22 @@ const CommunityPost = () => {
     setIsSubmitting(true);
     
     try {
-      // 요청 데이터 준비
+      // Fix: Ensure category is a single value, not concatenated
       const requestData = {
-        category: category,
         title: title.trim(),
-        content: content.trim()
+        content: content.trim(),
+        category: category // This should be a single value like 'HOUSING', not 'HOUSING/JOBS/STUDY/SOCIAL/HELP'
       };
       
-      // 상세 로깅
-      console.log('=== POST 요청 정보 ===');
-      console.log('URL:', 'https://unithon1.shop/api/posts');
-      console.log('Method:', 'POST');
-      console.log('Headers:', {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authToken}`
-      });
-      console.log('Request Body:', JSON.stringify(requestData, null, 2));
-      console.log('User Info:', user);
-      console.log('Token:', authToken ? `${authToken.substring(0, 20)}...` : 'No token');
-      console.log('========================');
+      // Add validation to ensure category is valid
+      const validCategories = categories.map(cat => cat.value);
+      if (!validCategories.includes(requestData.category)) {
+        alert('Please select a valid category.');
+        setIsSubmitting(false);
+        return;
+      }
+      
+      console.log('Request Data:', requestData); // Debug log
       
       const response = await fetch('https://unithon1.shop/api/posts', {
         method: 'POST',
