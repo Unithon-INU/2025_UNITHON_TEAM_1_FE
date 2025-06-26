@@ -201,17 +201,16 @@ const CommunityPost = () => {
   const { user, token, refreshTokenFunc } = useAuth();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [category, setCategory] = useState('GENERAL'); // Fix: Use single category value
+  const [category, setCategory] = useState('HOUSING'); // Changed from 'GENERAL' to 'HOUSING'
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const categories = [
-    { value: 'GENERAL', label: 'General' },
     { value: 'HOUSING', label: 'Housing' },
     { value: 'JOBS', label: 'Jobs' },
     { value: 'STUDY', label: 'Study' },
     { value: 'SOCIAL', label: 'Social' },
     { value: 'HELP', label: 'Help' }
-  ];
+  ]; // Removed the 'GENERAL' option since it doesn't exist
 
   // Get the user nickname from the auth context
   const userNickname = user?.nickname || 'User';
