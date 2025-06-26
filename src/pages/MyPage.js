@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+// Add useEffect import
+import React, { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../contexts/AuthContext';
@@ -184,7 +185,9 @@ const MenuItem = styled.div`
   }
 `;
 
-const MenuIcon = styled.div`
+const MenuIcon = styled.div.withConfig({
+  shouldForwardProp: (prop) => !['iconColor'].includes(prop),
+})`
   width: 40px;
   height: 40px;
   border-radius: 8px;
@@ -289,37 +292,56 @@ const CancelButton = styled(ModalButton)`
   }
 `;
 
+// Add this new styled component for the login prompt
 const LoginPrompt = styled.div`
-  background: white;
-  margin: 16px;
-  padding: 32px 20px;
-  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
   text-align: center;
+  background: white;
+  margin: 20px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 `;
 
-const LoginTitle = styled.h2`
+const LoginPromptIcon = styled.div`
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #E3F2FD;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  color: #2196F3;
+`;
+
+const LoginPromptTitle = styled.h2`
   font-size: 24px;
   font-weight: 600;
   color: #333;
-  margin: 0 0 8px 0;
+  margin: 0 0 12px 0;
 `;
 
-const LoginSubtitle = styled.p`
+const LoginPromptText = styled.p`
   font-size: 16px;
-  color: #757575;
+  color: #666;
   margin: 0 0 24px 0;
+  line-height: 1.5;
 `;
 
 const LoginButton = styled.button`
   background: #2196F3;
   color: white;
   border: none;
-  border-radius: 8px;
   padding: 12px 32px;
+  border-radius: 8px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: background-color 0.2s;
   
   &:hover {
     background: #1976D2;
@@ -327,69 +349,78 @@ const LoginButton = styled.button`
 `;
 
 const MyPage = () => {
-  const { user, isLoggedIn, logout } = useAuth();
+  const { 
+    user, 
+    isLoggedIn, 
+    logout, 
+    token
+  } = useAuth();
+  
   const navigate = useNavigate();
   const [userName, setUserName] = useState('Loading...');
   const [isEditingName, setIsEditingName] = useState(false);
-  const [editedName, setEditedName] = useState('');
   const [tempName, setTempName] = useState('');
 
-  // Fetch user data using the specific member ID
+  // Update userName when user data is available
   useEffect(() => {
-    const fetchUserData = async () => {
-      if (isLoggedIn && user && user.id) {
-        try {
-          const response = await fetch(`https://unithon1.shop/api/members/${user.id}`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${user.token || localStorage.getItem('token')}`
-            }
-          });
-          
-          if (response.ok) {
-            const userData = await response.json();
-            // Use the nickname from the API response
-            setUserName(userData.nickname || 'User');
-          } else {
-            console.error('Failed to fetch user data');
-            setUserName(user.nickname || 'User');
-          }
-        } catch (error) {
-          console.error('Failed to fetch user data:', error);
-          // Fallback to stored user data
-          setUserName(user.nickname || 'User');
+    if (user && user.nickname) {
+      setUserName(user.nickname);
+    } else if (user && user.email) {
+      // Fallback to email prefix if nickname is not available
+      setUserName(user.email.split('@')[0]);
+    }
+  }, [user]);
+
+  // Add function to update user profile
+  const handleSaveName = useCallback(async () => {
+    if (tempName.trim() && token) {
+      try {
+        const response = await fetch('https://unithon1.shop/api/members/me', {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            nickname: tempName.trim()
+          })
+        });
+        
+        if (response.ok) {
+          setUserName(tempName.trim());
+          // Update user context with new data
+          const updatedUser = { ...user, nickname: tempName.trim() };
+          localStorage.setItem('user', JSON.stringify(updatedUser));
         }
-      } else if (isLoggedIn && user) {
-        // If no ID available, use stored nickname
-        setUserName(user.nickname || 'User');
+      } catch (error) {
+        console.error('Failed to update profile:', error);
       }
-    };
-
-    fetchUserData();
-  }, [isLoggedIn, user]);
-
-  const handleEditName = () => {
-    setTempName(userName);
-    setIsEditingName(true);
-  };
-
-  const handleSaveName = () => {
-    if (tempName.trim()) {
-      setUserName(tempName.trim());
     }
     setIsEditingName(false);
-  };
+  }, [tempName, token, user]);
 
-  const handleCancelEdit = () => {
+  const handleEditName = useCallback(() => {
+    setTempName(userName);
+    setIsEditingName(true);
+  }, [userName]);
+
+  const handleCancelEdit = useCallback(() => {
     setTempName('');
     setIsEditingName(false);
-  };
+  }, []);
 
-  const handleLogout = () => {
+  // Remove this duplicate function declaration (lines 412-417)
+  // const handleSaveName = useCallback(() => {
+  //   if (tempName.trim()) {
+  //     setUserName(tempName.trim());
+  //   }
+  //   setIsEditingName(false);
+  // }, [tempName]);
+
+  const handleLogout = useCallback(() => {
     logout();
     navigate('/');
-  };
+  }, [logout, navigate]);
 
   const menuItems = [];
 
@@ -397,18 +428,22 @@ const MyPage = () => {
     return (
       <Container>
         <Header>
-          <BackButton onClick={() => navigate('/')}>
+          <BackButton onClick={() => navigate(-1)}>
             <ArrowBackIcon />
           </BackButton>
           <Title>My Page</Title>
         </Header>
-
+        
         <LoginPrompt>
-          <LoginIcon style={{ fontSize: 48, color: '#2196F3', marginBottom: 16 }} />
-          <LoginTitle>Welcome to UniBus</LoginTitle>
-          <LoginSubtitle>Please log in to access your profile and personalized features</LoginSubtitle>
+          <LoginPromptIcon>
+            <LoginIcon style={{ fontSize: 40 }} />
+          </LoginPromptIcon>
+          <LoginPromptTitle>Login Required</LoginPromptTitle>
+          <LoginPromptText>
+            Please log in to access your profile and manage your account settings.
+          </LoginPromptText>
           <LoginButton onClick={() => navigate('/login')}>
-            Log In
+            Go to Login
           </LoginButton>
         </LoginPrompt>
       </Container>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../contexts/AuthContext';
@@ -201,36 +201,56 @@ const CommentText = styled.p`
   margin: 0;
 `;
 
-const CommentInput = styled.div`
-  position: fixed;
-  bottom: 80px;
-  left: 0;
-  right: 0;
-  background: white;
-  border-top: 1px solid #E0E0E0;
-  padding: 16px 20px;
+const CommentInputContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-  z-index: 1001;
+  padding: 16px 20px;
+  border-top: 1px solid #E0E0E0;
+  background-color: white;
+  position: sticky;
+  bottom: 0;
 `;
 
-const Input = styled.input`
+const CommentInput = styled.input`
   flex: 1;
   padding: 12px 16px;
   border: 1px solid #E0E0E0;
   border-radius: 24px;
   font-size: 14px;
-  background: #F8F9FA;
+  outline: none;
   
   &:focus {
-    outline: none;
     border-color: #2196F3;
-    background: white;
   }
   
   &::placeholder {
-    color: #BDBDBD;
+    color: #999;
+  }
+`;
+
+const CommentButton = styled.button`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #2196F3;
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: #1976D2;
+    transform: scale(1.05);
+  }
+  
+  &:disabled {
+    background: #E0E0E0;
+    cursor: not-allowed;
+    transform: none;
   }
 `;
 
@@ -290,147 +310,201 @@ const LoginLink = styled.button`
 const CommunityPostDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, token } = useAuth();
+  const [post, setPost] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [isLiked, setIsLiked] = useState(false);
   const [comment, setComment] = useState('');
-  const [likes, setLikes] = useState(15);
+  const [likes, setLikes] = useState(0);
+  
+  // Add edit state management
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState({
+    category: '',
+    title: '',
+    content: ''
+  });
 
-  // Sample post data - in real app, this would be fetched based on the ID
-  const postData = {
-    1: {
-      id: 1,
-      username: 'Sarah Kim',
-      avatar: 'SK',
-      avatarColor: '#E3F2FD',
-      time: '2 hours ago',
-      category: 'Jobs',
-      title: 'How to find a part-time job in Seoul?',
-      content: `I'm an international student looking for part-time work opportunities in Seoul. I've been searching for a while but haven't had much luck. \n\nDoes anyone have recommendations for:
-• Job search websites specifically for international students
-• Types of jobs that are foreigner-friendly
-• Tips for the application process
-• Any companies known to hire international students
-
-I'm particularly interested in English teaching, tutoring, or customer service roles. My Korean is intermediate level.
-
-Any advice would be greatly appreciated! 🙏`,
-      likes: 15,
-      comments: [
-        {
-          id: 1,
-          username: 'Mike Johnson',
-          avatar: 'MJ',
-          avatarColor: '#F3E5F5',
-          time: '1 hour ago',
-          text: 'I found my part-time job through Alba Heaven (알바천국). They have an English version and many positions for international students!'
-        },
-        {
-          id: 2,
-          username: 'Emma Chen',
-          avatar: 'EC',
-          avatarColor: '#E8F5E8',
-          time: '45 minutes ago',
-          text: 'Try checking with your university\'s career center. They often have partnerships with local businesses looking for international students.'
+  // Fetch individual post from backend
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`https://unithon1.shop/api/posts/${id}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch post');
         }
-      ]
-    },
-    2: {
-      id: 2,
-      username: 'Mike Johnson',
-      avatar: 'MJ',
-      avatarColor: '#F3E5F5',
-      time: '1 day ago',
-      category: 'Study',
-      title: 'Best places to study on campus?',
-      content: `The main library is always packed, especially during exam season. I'm looking for alternative quiet study spots on campus where I can focus better.\n\nI've tried:
-• 24-hour study rooms (too crowded)
-• Cafeteria (too noisy)
-• Empty classrooms (sometimes locked)
+        
+        const data = await response.json();
+        setPost(data);
+        setLikes(data.likeCount);
+      } catch (error) {
+        console.error('Error fetching post:', error);
+        setError('Failed to load post');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-Any hidden gems you'd recommend? Preferably somewhere with:
-• Good WiFi
-• Comfortable seating
-• Not too many distractions
-• Available during evening hours
-
-Thanks in advance for any suggestions!`,
-      likes: 8,
-      comments: [
-        {
-          id: 1,
-          username: 'David Park',
-          avatar: 'DP',
-          avatarColor: '#FFF3E0',
-          time: '18 hours ago',
-          text: 'The graduate study lounge on the 5th floor of the engineering building is usually quiet and has great WiFi!'
-        }
-      ]
+    if (id) {
+      fetchPost();
     }
-  };
+  }, [id]);
 
-  const post = postData[id] || postData[1];
-
-  const handleLike = () => {
-    setIsLiked(!isLiked);
-    setLikes(prev => isLiked ? prev - 1 : prev + 1);
-  };
-
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: post.title,
-        text: post.content,
-        url: window.location.href
-      });
+  // Delete post function
+  const handleDeletePost = async () => {
+    if (!window.confirm('Are you sure you want to delete this post?')) {
+      return;
     }
-  };
-
-  // Similar updates for comment usernames - fetch from API
-  const handleSendComment = async () => {
-  if (comment.trim()) {
+    
     try {
-      // Get current user nickname
-      const userResponse = await fetch('https://unithon1.shop/api/members');
-      let currentUserNickname = 'User';
+      const response = await fetch(`https://unithon1.shop/api/posts/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`, // Add this line
+        },
+      });
       
-      if (userResponse.ok) {
-        const userData = await userResponse.json();
-        if (userData && userData.length > 0) {
-          currentUserNickname = userData[0].nickname;
-        }
+      if (!response.ok) {
+        throw new Error('Failed to delete post');
+      }
+      
+      alert('Post deleted successfully');
+      navigate('/community');
+    } catch (error) {
+      console.error('Error deleting post:', error);
+      alert('Failed to delete post. Please try again.');
+    }
+  };
+
+  // Updated Edit post function
+  const handleEditPost = () => {
+    if (post) {
+      setEditForm({
+        category: post.category || '',
+        title: post.title || '',
+        content: post.content || ''
+      });
+      setIsEditing(true);
+    }
+  };
+
+  // New function to handle edit form submission
+  const handleUpdatePost = async () => {
+    if (!editForm.title.trim() || !editForm.content.trim()) {
+      alert('Please fill in all required fields');
+      return;
+    }
+
+    try {
+      const response = await fetch(`https://unithon1.shop/api/posts/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          category: editForm.category,
+          title: editForm.title,
+          content: editForm.content
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update post');
       }
 
-      // Handle comment submission with nickname
-      console.log('Sending comment:', {
-        text: comment,
-        username: currentUserNickname,
-        time: 'Just now'
-      });
-      
-      setComment('');
+      const updatedPost = await response.json();
+      setPost(updatedPost);
+      setIsEditing(false);
+      alert('Post updated successfully');
     } catch (error) {
-      console.error('Failed to send comment:', error);
+      console.error('Error updating post:', error);
+      alert('Failed to update post. Please try again.');
     }
+  };
+
+  // Function to cancel editing
+  const handleCancelEdit = () => {
+    setIsEditing(false);
+    setEditForm({ category: '', title: '', content: '' });
+  };
+
+  // Function to handle form input changes
+  const handleEditFormChange = (field, value) => {
+    setEditForm(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  if (loading) {
+    return (
+      <Container>
+        <Header>
+          <BackButton onClick={() => navigate('/community')}>
+            <ArrowBackIcon />
+          </BackButton>
+          <Title>Post</Title>
+        </Header>
+        <div style={{ padding: '20px', textAlign: 'center' }}>Loading post...</div>
+      </Container>
+    );
   }
-};
+
+  if (error || !post) {
+    return (
+      <Container>
+        <Header>
+          <BackButton onClick={() => navigate('/community')}>
+            <ArrowBackIcon />
+          </BackButton>
+          <Title>Post</Title>
+        </Header>
+        <div style={{ padding: '20px', textAlign: 'center', color: 'red' }}>
+          {error || 'Post not found'}
+        </div>
+      </Container>
+    );
+  }
 
   return (
     <Container>
       <Header>
-        <BackButton onClick={() => navigate(-1)}>
+        <BackButton onClick={() => navigate('/community')}>
           <ArrowBackIcon />
         </BackButton>
         <Title>Post</Title>
+        {/* Add edit/delete buttons for post owner */}
+        <div style={{ display: 'flex', gap: '8px' }}>
+          <button onClick={handleEditPost} style={{ padding: '4px 8px', fontSize: '12px' }}>
+            Edit
+          </button>
+          <button 
+            onClick={handleDeletePost} 
+            style={{ padding: '4px 8px', fontSize: '12px', background: '#f44336', color: 'white', border: 'none', borderRadius: '4px' }}
+          >
+            Delete
+          </button>
+        </div>
       </Header>
 
       <Content>
         <PostHeader>
-          <Avatar color={post.avatarColor}>
-            {post.avatar}
+          <Avatar color={getAvatarColor(post.nickname)}>
+            {post.nickname.charAt(0).toUpperCase()}
           </Avatar>
           <PostInfo>
-            <Username>{post.username}</Username>
-            <PostTime>{post.time}</PostTime>
+            <Username>{post.nickname}</Username>
+            <PostTime>{formatDate(post.createdAt)}</PostTime>
           </PostInfo>
         </PostHeader>
 
@@ -439,64 +513,52 @@ Thanks in advance for any suggestions!`,
         <PostContent>{post.content}</PostContent>
 
         <PostActions>
-          <ActionButton active={isLiked} onClick={handleLike}>
+          <ActionButton onClick={() => setIsLiked(!isLiked)}>
             {isLiked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
             {likes}
           </ActionButton>
           <ActionButton>
             <CommentIcon />
-            {post.comments.length}
+            {post.commentCount}
           </ActionButton>
-          <ActionButton onClick={handleShare}>
+          <ActionButton>
             <ShareIcon />
-            Share
           </ActionButton>
         </PostActions>
 
-        <CommentsSection>
-          <SectionTitle>Comments ({post.comments.length})</SectionTitle>
-          {post.comments.map(comment => (
-            <CommentCard key={comment.id}>
-              <CommentHeader>
-                <CommentAvatar color={comment.avatarColor}>
-                  {comment.avatar}
-                </CommentAvatar>
-                <CommentInfo>
-                  <CommentUsername>{comment.username}</CommentUsername>
-                  <CommentTime>{comment.time}</CommentTime>
-                </CommentInfo>
-              </CommentHeader>
-              <CommentText>{comment.text}</CommentText>
-            </CommentCard>
-          ))}
-        </CommentsSection>
-      </Content>
-
-      {isLoggedIn ? (
-        <CommentInput>
-          <Input
-            placeholder="Write a comment..."
+        {/* Comments section would be implemented similarly */}
+        <SectionTitle>Comments ({post.commentCount})</SectionTitle>
+        
+        {/* Comment input */}
+        <CommentInputContainer>
+          <CommentInput
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            onKeyPress={(e) => e.key === 'Enter' && handleSendComment()}
+            placeholder="Write a comment..."
           />
-          <SendButton 
-            onClick={handleSendComment}
-            disabled={!comment.trim()}
-          >
-            <SendIcon fontSize="small" />
-          </SendButton>
-        </CommentInput>
-      ) : (
-        <LoginPromptComment>
-          <LoginText>Please log in to write a comment</LoginText>
-          <LoginLink onClick={() => navigate('/login')}>
-            Log In
-          </LoginLink>
-        </LoginPromptComment>
-      )}
+          <CommentButton>
+            <SendIcon />
+          </CommentButton>
+        </CommentInputContainer>
+      </Content>
     </Container>
   );
 };
 
+// Helper functions (same as in Community.js)
+const getAvatarColor = (nickname) => {
+  const colors = ['#FF6B6B', '#F3E5F5', '#E8F5E8', '#FFF3E0', '#E3F2FD'];
+  return colors[nickname.length % colors.length];
+};
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
+  
+  if (diffInHours < 1) return 'Just now';
+  if (diffInHours < 24) return `${diffInHours} hours ago`;
+  if (diffInHours < 48) return '1 day ago';
+  return `${Math.floor(diffInHours / 24)} days ago`;
+};
 export default CommunityPostDetail;

@@ -259,24 +259,39 @@ const Login = () => {
         throw new Error(errorData.message || 'Login failed');
       }
   
+      // 로그인 성공 처리 부분 수정
       const userData = await response.json();
-      
-      // Store the token for future API calls
-      if (userData.token) {
-        localStorage.setItem('token', userData.token);
+  
+      // 디버깅을 위한 로깅 추가
+      console.log('Login response:', userData);
+  
+      // 백엔드에서 accessToken을 반환하므로 이를 token으로 사용
+      const token = userData.accessToken || userData.token;
+      const refreshToken = userData.refreshToken;
+  
+      // 토큰 유효성 검사 수정
+      if (!token || token.split('.').length !== 3) {
+        throw new Error('Invalid access token received from server');
       }
-      
-      // Update auth context with complete user data including ID and nickname
-      login({
-        id: userData.id,  // Make sure to store the user ID
-        email: formData.email,
+  
+      // 사용자 ID 확인 (백엔드 응답에 id가 없을 수 있음)
+      if (!userData.id) {
+        console.warn('User ID is missing in the response');
+        // 이메일을 임시 ID로 사용하거나 별도 API 호출로 사용자 정보 가져오기
+      }
+  
+      // AuthContext의 login 함수 호출
+      await login({
+        id: userData.id || userData.email || formData.email, // Use email as fallback ID
+        email: userData.email || formData.email,
         nickname: userData.nickname,
         role: userData.role,
-        token: userData.token,
+        token: token,
+        refreshToken: refreshToken,
         ...userData
       });
-      
-      console.log('Login successful:', userData);
+  
+      console.log('Login successful');
       navigate('/mypage');
     } catch (err) {
       console.error('Login error:', err);

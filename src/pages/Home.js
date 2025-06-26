@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -51,6 +51,22 @@ const SectionTitle = styled.h2`
   font-weight: 600;
   color: #333;
   margin: 30px 0 16px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const ViewAllButton = styled.button`
+  background: none;
+  border: none;
+  color: #2196F3;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  
+  &:hover {
+    text-decoration: underline;
+  }
 `;
 
 const PostCard = styled.div`
@@ -70,6 +86,12 @@ const PostImage = styled.div`
   background: ${props => props.color || '#E3F2FD'};
   margin-right: 16px;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
 `;
 
 const PostContent = styled.div`
@@ -88,6 +110,22 @@ const PostMeta = styled.p`
   font-size: 14px;
   color: #757575;
   margin: 0;
+`;
+
+const CategoryTag = styled.span`
+  display: inline-block;
+  background: #E3F2FD;
+  color: #1976D2;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-right: 8px;
+`;
+
+const LikeCount = styled.span`
+  color: #F44336;
+  font-weight: 500;
 `;
 
 const ClubCard = styled.div`
@@ -168,74 +206,65 @@ const ApplyButton = styled.button`
   }
 `;
 
-const SectionCard = styled.div`
-  background: white;
-  border-radius: 16px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-`;
-
-const MoreButton = styled.button`
-  background: none;
-  border: none;
-  color: #757575;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  padding: 8px 0;
-  margin-top: 12px;
-  width: 100%;
+const LoadingText = styled.div`
   text-align: center;
-  transition: color 0.3s ease;
-  
-  &:hover {
-    color: #2196F3;
-  }
-`;
-
-const PostPreview = styled.div`
-  padding: 12px 0;
-  border-bottom: 1px solid #F0F0F0;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  border-radius: 8px;
-  margin: 0 -8px;
-  padding: 12px 8px;
-  
-  &:hover {
-    background: #F8F9FA;
-  }
-  
-  &:last-child {
-    border-bottom: none;
-  }
+  color: #757575;
+  padding: 20px;
 `;
 
 const Home = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = React.useState('For You');
+  const [activeTab, setActiveTab] = useState('For You');
+  const [topPosts, setTopPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const boardPosts = [
-    {
-      id: 1,
-      title: 'How to find a part-time job in Seoul?',
-      meta: '10 comments • 2 hours ago',
-      color: '#E3F2FD'
-    },
-    {
-      id: 2,
-      title: 'Best places to study on campus?',
-      meta: '5 comments • 1 day ago',
-      color: '#F3E5F5'
-    },
-    {
-      id: 3,
-      title: 'Looking for a roommate for the spring semester',
-      meta: '12 comments • 3 days ago',
-      color: '#E8F5E8'
-    }
-  ];
+  // Helper function to get avatar color
+  const getAvatarColor = (nickname) => {
+    const colors = ['#FF6B6B', '#F3E5F5', '#E8F5E8', '#FFF3E0', '#E3F2FD'];
+    return colors[nickname.length % colors.length];
+  };
+
+  // Helper function to format date
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
+    
+    if (diffInHours < 1) return 'Just now';
+    if (diffInHours < 24) return `${diffInHours} hours ago`;
+    if (diffInHours < 48) return '1 day ago';
+    return `${Math.floor(diffInHours / 24)} days ago`;
+  };
+
+  // Fetch top 3 most liked posts
+  useEffect(() => {
+    const fetchTopPosts = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('https://unithon1.shop/api/posts/top', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch top posts');
+        }
+        
+        const data = await response.json();
+        setTopPosts(data);
+      } catch (error) {
+        console.error('Error fetching top posts:', error);
+        // Fallback to empty array if API fails
+        setTopPosts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTopPosts();
+  }, []);
 
   const clubs = [
     {
@@ -267,16 +296,33 @@ const Home = () => {
         <Title>Home</Title>
       </Header>
 
-      <SectionTitle>Board</SectionTitle>
-      {boardPosts.map(post => (
-        <PostCard key={post.id} onClick={() => navigate(`/community/post/${post.id}`)}>
-          <PostImage color={post.color} />
-          <PostContent>
-            <PostTitle>{post.title}</PostTitle>
-            <PostMeta>{post.meta}</PostMeta>
-          </PostContent>
-        </PostCard>
-      ))}
+      <SectionTitle>
+        Board
+        <ViewAllButton onClick={() => navigate('/community')}>
+          View All
+        </ViewAllButton>
+      </SectionTitle>
+      
+      {loading ? (
+        <LoadingText>Loading popular posts...</LoadingText>
+      ) : topPosts.length > 0 ? (
+        topPosts.map(post => (
+          <PostCard key={post.id} onClick={() => navigate(`/community/post/${post.id}`)}>
+            <PostImage color={getAvatarColor(post.nickname)}>
+              {post.nickname.charAt(0).toUpperCase()}
+            </PostImage>
+            <PostContent>
+              <PostTitle>{post.title}</PostTitle>
+              <PostMeta>
+                <CategoryTag>{post.category}</CategoryTag>
+                <LikeCount>❤️ {post.likeCount}</LikeCount> • {post.commentCount} comments • {formatDate(post.createdAt)}
+              </PostMeta>
+            </PostContent>
+          </PostCard>
+        ))
+      ) : (
+        <LoadingText>No popular posts available</LoadingText>
+      )}
 
       <SectionTitle>Clubs</SectionTitle>
       {clubs.map(club => (

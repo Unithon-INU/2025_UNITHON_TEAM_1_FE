@@ -77,7 +77,9 @@ const Label = styled.label`
   display: block;
 `;
 
-const Input = styled.input`
+const Input = styled.input.withConfig({
+  shouldForwardProp: (prop) => !['error', 'success'].includes(prop),
+})`
   width: 100%;
   padding: 14px;
   border: 2px solid ${props => 
@@ -142,7 +144,9 @@ const PasswordRequirements = styled.div`
   font-size: 12px;
 `;
 
-const Requirement = styled.div`
+const Requirement = styled.div.withConfig({
+  shouldForwardProp: (prop) => prop !== 'met'
+})`
   display: flex;
   align-items: center;
   gap: 6px;
@@ -283,11 +287,10 @@ const LoginLink = styled(Link)`
 const Register = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    nickname: '', // Changed from firstName and lastName
+    nickname: '', // ✅ Properly initialized
     email: '',
     password: '',
     confirmPassword: '',
-    // Removed university and country fields
     agreeToTerms: false
   });
   const [showPassword, setShowPassword] = useState(false);
@@ -324,6 +327,7 @@ const Register = () => {
   const validateForm = () => {
     const newErrors = {};
 
+    // Validation includes nickname - MOVED INSIDE validateForm function
     if (!formData.nickname.trim()) newErrors.nickname = 'Nickname is required';
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
@@ -352,15 +356,14 @@ const Register = () => {
     setIsLoading(true);
 
     try {
-      // Connect to your backend API
+      // API call sends nickname to backend - MOVED INSIDE handleSubmit function
       const response = await fetch('https://unithon1.shop/api/members/signup', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        // In the handleSubmit function, the request body should include:
         body: JSON.stringify({
-          nickname: formData.nickname,  // ✅ This is already correct
+          nickname: formData.nickname,  // ✅ Correctly sending nickname
           email: formData.email,
           password: formData.password,
           confirmPassword: formData.confirmPassword

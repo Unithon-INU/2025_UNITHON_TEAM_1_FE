@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import {
@@ -80,7 +80,9 @@ const FilterContainer = styled.div`
   }
 `;
 
-const FilterChip = styled.button`
+const FilterChip = styled.button.withConfig({
+  shouldForwardProp: (prop) => prop !== 'active'
+})`
   background: ${props => props.active ? '#2196F3' : '#F5F5F5'};
   color: ${props => props.active ? 'white' : '#757575'};
   border: none;
@@ -214,61 +216,57 @@ const FAB = styled.button`
 const Community = () => {
   const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = useState('All');
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [showSearch, setShowSearch] = useState(false);
 
-  const filters = ['All', 'Housing', 'Jobs', 'Study', 'Social', 'Help'];
+  const filters = ['All', 'HOUSING', 'JOBS', 'STUDY', 'SOCIAL', 'HELP'];
 
-  // In the posts array, you'll want to fetch real data from API
-  // For now, update the hardcoded data to use more realistic nicknames
-  const posts = [
-    {
-      id: 1,
-      username: 'StudentA', // This should come from API
-      avatar: 'S',
-      avatarColor: '#FF6B6B',
-      time: '2 hours ago',
-      category: 'General',
-      title: 'Welcome to our university community!',
-      content: 'Looking forward to connecting with fellow students...',
-      likes: 24,
-      comments: 10,
-    },
-    {
-      id: 2,
-      username: 'Mike Johnson',
-      avatar: 'MJ',
-      avatarColor: '#F3E5F5',
-      time: '1 day ago',
-      title: 'Best places to study on campus?',
-      content: 'Looking for quiet study spots on campus. The library is always crowded. Any hidden gems?',
-      likes: 8,
-      comments: 5,
-      category: 'Study'
-    },
-    {
-      id: 3,
-      username: 'Emma Chen',
-      avatar: 'EC',
-      avatarColor: '#E8F5E8',
-      time: '3 days ago',
-      title: 'Looking for a roommate for spring semester',
-      content: 'Female student looking for a roommate near Hongik University. Clean, quiet, and friendly!',
-      likes: 23,
-      comments: 12,
-      category: 'Housing'
-    },
-    {
-      id: 4,
-      username: 'David Park',
-      avatar: 'DP',
-      avatarColor: '#FFF3E0',
-      time: '1 week ago',
-      title: 'Korean language exchange group',
-      content: 'Starting a language exchange group for international students. Meet every Saturday at 2 PM!',
-      likes: 31,
-      comments: 18,
-      category: 'Social'
-    }
-  ];
+  // Fetch posts from backend
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        setLoading(true);
+        let url = 'https://unithon1.shop/api/posts';
+        const params = new URLSearchParams();
+        
+        if (activeFilter !== 'All') {
+          params.append('category', activeFilter);
+        }
+        
+        if (searchKeyword.trim()) {
+          params.append('keyword', searchKeyword.trim());
+        }
+        
+        if (params.toString()) {
+          url += `?${params.toString()}`;
+        }
+        
+        const response = await fetch(url, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch posts');
+        }
+        
+        const data = await response.json();
+        setPosts(data);
+      } catch (error) {
+        console.error('Error fetching posts:', error);
+        setError('Failed to load posts');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPosts();
+  }, [activeFilter, searchKeyword]);
 
   const filteredPosts = activeFilter === 'All' 
     ? posts 
@@ -281,7 +279,10 @@ const Community = () => {
           <ArrowBackIcon />
         </BackButton>
         <Title>Community</Title>
-
+        <HeaderActions>
+          <SearchIcon style={{ marginRight: '12px', cursor: 'pointer' }} />
+          <FilterIcon style={{ cursor: 'pointer' }} />
+        </HeaderActions>
       </Header>
 
       <FilterContainer>
@@ -296,27 +297,26 @@ const Community = () => {
         ))}
       </FilterContainer>
 
+      {loading && <div style={{ padding: '20px', textAlign: 'center' }}>Loading posts...</div>}
+      {error && <div style={{ padding: '20px', textAlign: 'center', color: 'red' }}>{error}</div>}
+      
       <PostsList>
-        {filteredPosts.map(post => (
+        {posts.map(post => (
           <PostCard key={post.id} onClick={() => navigate(`/community/post/${post.id}`)}>
             <PostHeader>
-              <Avatar color={post.avatarColor}>
-                {post.avatar}
+              <Avatar color={getAvatarColor(post.nickname)}>
+                {post.nickname.charAt(0).toUpperCase()}
               </Avatar>
               <PostInfo>
-                <Username>{post.username}</Username>
-                <PostTime>{post.time}</PostTime>
+                <Username>{post.nickname}</Username>
+                <PostTime>{formatDate(post.createdAt)}</PostTime>
               </PostInfo>
             </PostHeader>
             <PostTitle>{post.title}</PostTitle>
             <PostContent>{post.content}</PostContent>
             <PostActions>
-              <ActionButton>
-                ❤️ {post.likes}
-              </ActionButton>
-              <ActionButton>
-                💬 {post.comments}
-              </ActionButton>
+              <span>❤️ {post.likeCount}</span>
+              <span>💬 {post.commentCount}</span>
             </PostActions>
           </PostCard>
         ))}
@@ -327,6 +327,23 @@ const Community = () => {
       </FAB>
     </Container>
   );
+};
+
+// Helper functions
+const getAvatarColor = (nickname) => {
+  const colors = ['#FF6B6B', '#F3E5F5', '#E8F5E8', '#FFF3E0', '#E3F2FD'];
+  return colors[nickname.length % colors.length];
+};
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
+  
+  if (diffInHours < 1) return 'Just now';
+  if (diffInHours < 24) return `${diffInHours} hours ago`;
+  if (diffInHours < 48) return '1 day ago';
+  return `${Math.floor(diffInHours / 24)} days ago`;
 };
 
 export default Community;

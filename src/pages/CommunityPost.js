@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { useAuth } from '../contexts/AuthContext';
 import {
   ArrowBack as ArrowBackIcon,
-  PhotoCamera as PhotoIcon,
+  Photo as PhotoIcon,
 } from '@mui/icons-material';
 
 const Container = styled.div`
@@ -15,6 +15,7 @@ const Container = styled.div`
 const Header = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 16px 20px;
   border-bottom: 1px solid #E0E0E0;
   position: sticky;
@@ -27,7 +28,6 @@ const BackButton = styled.button`
   background: none;
   border: none;
   padding: 8px;
-  margin-right: 16px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -40,18 +40,19 @@ const Title = styled.h1`
   color: #333;
   margin: 0;
   flex: 1;
+  text-align: center;
 `;
 
 const PostButton = styled.button`
   background: ${props => props.disabled ? '#E0E0E0' : '#2196F3'};
-  color: ${props => props.disabled ? '#757575' : 'white'};
+  color: ${props => props.disabled ? '#999' : 'white'};
   border: none;
   border-radius: 20px;
-  padding: 8px 20px;
+  padding: 8px 16px;
   font-size: 14px;
   font-weight: 600;
   cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
-  transition: background 0.3s ease;
+  transition: all 0.3s ease;
   
   &:hover {
     background: ${props => props.disabled ? '#E0E0E0' : '#1976D2'};
@@ -72,14 +73,13 @@ const Avatar = styled.div`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #2196F3, #21CBF3);
-  margin-right: 12px;
+  background: #2196F3;
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 16px;
   font-weight: 600;
-  color: white;
+  margin-right: 12px;
 `;
 
 const UserDetails = styled.div`
@@ -95,7 +95,7 @@ const UserName = styled.div`
 
 const PostingAs = styled.div`
   font-size: 12px;
-  color: #757575;
+  color: #666;
 `;
 
 const CategorySelector = styled.div`
@@ -103,11 +103,11 @@ const CategorySelector = styled.div`
 `;
 
 const CategoryLabel = styled.label`
+  display: block;
   font-size: 14px;
   font-weight: 600;
   color: #333;
   margin-bottom: 8px;
-  display: block;
 `;
 
 const CategorySelect = styled.select`
@@ -115,9 +115,9 @@ const CategorySelect = styled.select`
   padding: 12px 16px;
   border: 1px solid #E0E0E0;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 14px;
   background: white;
-  color: #333;
+  cursor: pointer;
   
   &:focus {
     outline: none;
@@ -127,140 +127,252 @@ const CategorySelect = styled.select`
 
 const TitleInput = styled.input`
   width: 100%;
-  padding: 16px;
+  padding: 16px 0;
   border: none;
+  border-bottom: 1px solid #E0E0E0;
   font-size: 18px;
   font-weight: 600;
-  color: #333;
-  background: transparent;
-  
-  &::placeholder {
-    color: #BDBDBD;
-  }
+  margin-bottom: 20px;
   
   &:focus {
     outline: none;
+    border-bottom-color: #2196F3;
+  }
+  
+  &::placeholder {
+    color: #999;
   }
 `;
 
 const ContentTextarea = styled.textarea`
   width: 100%;
   min-height: 200px;
-  padding: 16px;
+  padding: 16px 0;
   border: none;
   font-size: 16px;
-  color: #333;
-  background: transparent;
-  resize: vertical;
-  font-family: inherit;
   line-height: 1.5;
-  
-  &::placeholder {
-    color: #BDBDBD;
-  }
+  resize: vertical;
   
   &:focus {
     outline: none;
+  }
+  
+  &::placeholder {
+    color: #999;
   }
 `;
 
 const Divider = styled.div`
   height: 1px;
-  background: #F0F0F0;
-  margin: 0 -20px;
+  background: #E0E0E0;
+  margin: 0 20px;
 `;
 
 const ActionsBar = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 16px 20px;
-  gap: 20px;
 `;
 
 const ActionButton = styled.button`
   background: none;
   border: none;
+  color: #2196F3;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 14px;
-  color: #757575;
-  transition: all 0.3s ease;
   
   &:hover {
-    background: #F5F5F5;
-    color: #333;
+    color: #1976D2;
   }
 `;
 
 const CharacterCount = styled.div`
-  margin-left: auto;
   font-size: 12px;
-  color: #757575;
+  color: #666;
 `;
 
 const CommunityPost = () => {
   const navigate = useNavigate();
-  const { isLoggedIn } = useAuth();
+  const { user, token, refreshTokenFunc } = useAuth();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [category, setCategory] = useState('');
-  const [userNickname, setUserNickname] = useState('User');
+  const [category, setCategory] = useState('GENERAL');
+  // Remove the hardcoded userNickname state
+  // const [userNickname, setUserNickname] = useState('User');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Define categories array
   const categories = [
-    { value: '', label: 'Select a category' },
-    { value: 'Housing', label: 'Housing' },
-    { value: 'Jobs', label: 'Jobs' },
-    { value: 'Study', label: 'Study' },
-    { value: 'Social', label: 'Social' },
-    { value: 'Help', label: 'Help' }
+    { value: 'GENERAL', label: 'General' },
+    { value: 'HOUSING', label: 'Housing' },
+    { value: 'JOBS', label: 'Jobs' },
+    { value: 'STUDY', label: 'Study' },
+    { value: 'SOCIAL', label: 'Social' },
+    { value: 'HELP', label: 'Help' }
   ];
 
-  // Define canPost condition
-  const canPost = title.trim() && content.trim() && category;
+  // Get the user nickname from the auth context
+  const userNickname = user?.nickname || 'User';
 
-  // Define handlePost function
+  // Define canPost condition
+  const canPost = title.trim() && content.trim() && category && !isSubmitting;
+
   const handlePost = async () => {
     if (!canPost) return;
     
+    // 토큰 가져오기 통일
+    const authToken = token || localStorage.getItem('token');
+    
+    // 토큰 유효성 검사 추가
+    if (!user || !authToken) {
+      alert('Please log in to create a post.');
+      navigate('/login');
+      return;
+    }
+    
+    // 토큰 형식 검증
+    if (!authToken.includes('.') || authToken.split('.').length !== 3) {
+      console.error('Invalid token format');
+      alert('Invalid authentication token. Please log in again.');
+      navigate('/login');
+      return;
+    }
+    
+    // 토큰 만료 확인 및 갱신 시도
     try {
-      // Handle post creation logic here
-      console.log('Creating post:', { 
-        title, 
-        content, 
-        category, 
-        author: userNickname 
+      const tokenParts = authToken.split('.');
+      const payload = JSON.parse(atob(tokenParts[1]));
+      const currentTime = Math.floor(Date.now() / 1000);
+      
+      // 토큰이 만료되었거나 만료 임박한 경우
+      if (payload.exp <= currentTime + 300) { // 5분 이내 만료 예정
+        console.log('Token expired or expiring soon, attempting refresh');
+        
+        // refreshTokenFunc 사용
+        if (refreshTokenFunc) {
+          const refreshed = await refreshTokenFunc();
+          if (!refreshed) {
+            alert('Your session has expired. Please log in again.');
+            navigate('/login');
+            return;
+          }
+          // 토큰 갱신 성공 시 새 토큰 사용
+          const newToken = localStorage.getItem('token');
+          if (newToken) {
+            authToken = newToken;
+          }
+        } else {
+          alert('Your session has expired. Please log in again.');
+          navigate('/login');
+          return;
+        }
+      }
+    } catch (error) {
+      console.error('Token validation error:', error);
+      alert('Authentication error. Please log in again.');
+      navigate('/login');
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
+    try {
+      // 요청 데이터 준비
+      const requestData = {
+        category: category,
+        title: title.trim(),
+        content: content.trim()
+      };
+      
+      // 상세 로깅
+      console.log('=== POST 요청 정보 ===');
+      console.log('URL:', 'https://unithon1.shop/api/posts');
+      console.log('Method:', 'POST');
+      console.log('Headers:', {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`
+      });
+      console.log('Request Body:', JSON.stringify(requestData, null, 2));
+      console.log('User Info:', user);
+      console.log('Token:', authToken ? `${authToken.substring(0, 20)}...` : 'No token');
+      console.log('========================');
+      
+      const response = await fetch('https://unithon1.shop/api/posts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
+        },
+        body: JSON.stringify(requestData)
       });
       
-      // Navigate back to community after successful post
+      // 응답 정보 로깅
+      console.log('=== 응답 정보 ===');
+      console.log('Status:', response.status);
+      console.log('Status Text:', response.statusText);
+      console.log('Headers:', Object.fromEntries(response.headers.entries()));
+      
+      if (!response.ok) {
+        let errorText;
+        try {
+          errorText = await response.text();
+          console.log('Error Response Body:', errorText);
+        } catch (e) {
+          console.log('Error reading response body:', e);
+        }
+        
+        if (response.status === 401) {
+          throw new Error('Authentication required. Please log in.');
+        }
+        throw new Error(`Failed to create post: ${response.status} - ${errorText || 'Unknown error'}`);
+      }
+      
+      const newPost = await response.json();
+      console.log('Post created successfully:', newPost);
+      
       navigate('/community');
     } catch (error) {
-      console.error('Failed to create post:', error);
+      console.error('게시글 생성 실패:', error);
+      if (error.message.includes('Authentication')) {
+        alert('로그인이 필요합니다.');
+        navigate('/login');
+      } else {
+        alert(`게시글 생성에 실패했습니다: ${error.message}`);
+      }
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  // Fetch user nickname
-  useEffect(() => {
-    const fetchUserNickname = async () => {
-      try {
-        const response = await fetch('https://unithon1.shop/api/members');
-        if (response.ok) {
-          const userData = await response.json();
-          if (userData && userData.length > 0) {
-            setUserNickname(userData[0].nickname || 'User');
-          }
-        }
-      } catch (error) {
-        console.error('Failed to fetch user nickname:', error);
-      }
-    };
-
-    fetchUserNickname();
-  }, []);
+  // Remove the entire useEffect that was trying to fetch user nickname
+  // useEffect(() => {
+  //   const fetchUserNickname = async (authToken) => {
+  //     try {
+  //       // 기존: const response = await fetch(`https://unithon1.shop/api/members/${user.id}`, {
+  //       const response = await fetch('https://unithon1.shop/api/members/me', {
+  //         method: 'GET',
+  //         headers: {
+  //           'Authorization': `Bearer ${authToken}`,
+  //           'Content-Type': 'application/json'
+  //         }
+  //       });
+  //   
+  //       if (response.ok) {
+  //         const userData = await response.json();
+  //         return userData.nickname;
+  //       }
+  //       return null;
+  //     } catch (error) {
+  //       console.error('Error fetching user nickname:', error);
+  //       return null;
+  //     }
+  //   };
+  //   fetchUserNickname();
+  // }, [user]);
 
   return (
     <Container>
@@ -270,7 +382,7 @@ const CommunityPost = () => {
         </BackButton>
         <Title>New Post</Title>
         <PostButton disabled={!canPost} onClick={handlePost}>
-          Post
+          {isSubmitting ? 'Posting...' : 'Post'}
         </PostButton>
       </Header>
 
