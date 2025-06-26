@@ -279,23 +279,7 @@ const Community = () => {
           <ArrowBackIcon />
         </BackButton>
         <Title>Community</Title>
-        <HeaderActions>
-          <SearchIcon style={{ marginRight: '12px', cursor: 'pointer' }} />
-          <FilterIcon style={{ cursor: 'pointer' }} />
-        </HeaderActions>
       </Header>
-
-      <FilterContainer>
-        {filters.map(filter => (
-          <FilterChip
-            key={filter}
-            active={activeFilter === filter}
-            onClick={() => setActiveFilter(filter)}
-          >
-            {filter}
-          </FilterChip>
-        ))}
-      </FilterContainer>
 
       {loading && <div style={{ padding: '20px', textAlign: 'center' }}>Loading posts...</div>}
       {error && <div style={{ padding: '20px', textAlign: 'center', color: 'red' }}>{error}</div>}

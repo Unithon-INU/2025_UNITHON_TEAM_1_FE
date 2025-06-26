@@ -145,6 +145,9 @@ const ClubImage = styled.div`
   background: ${props => props.color || '#E8F5E8'};
   margin-right: 16px;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const ClubContent = styled.div`
@@ -216,6 +219,8 @@ const Home = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('For You');
   const [topPosts, setTopPosts] = useState([]);
+  const [topClubs, setTopClubs] = useState([]);
+  const [topJobs, setTopJobs] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // Helper function to get avatar color
@@ -256,7 +261,6 @@ const Home = () => {
         setTopPosts(data);
       } catch (error) {
         console.error('Error fetching top posts:', error);
-        // Fallback to empty array if API fails
         setTopPosts([]);
       } finally {
         setLoading(false);
@@ -266,28 +270,83 @@ const Home = () => {
     fetchTopPosts();
   }, []);
 
-  const clubs = [
-    {
-      id: 1,
-      name: 'International Student Association',
-      description: 'Connect with students from around the world',
-      color: '#E8F5E8'
-    },
-    {
-      id: 2,
-      name: 'Korean Culture Club',
-      description: 'Explore Korean culture and traditions',
-      color: '#FFF3E0'
-    }
-  ];
+  // Set top 3 clubs from the clubs list
+  useEffect(() => {
+    // Top 3 clubs from the clubs list (first 3 clubs)
+    const clubs = [
+      {
+        id: 1,
+        name: 'INUO',
+        category: 'Culture Division',
+        description: 'Orchestra Club - Experience classical music and orchestral performances with fellow musicians.',
+        members: 45,
+        location: 'Music Hall',
+        logo: '🎼',
+        color: '#E3F2FD'
+      },
+      {
+        id: 2,
+        name: 'IUDC',
+        category: 'Culture Division',
+        description: 'Dance Club - Express yourself through various dance styles and choreography.',
+        members: 38,
+        location: 'Dance Studio',
+        logo: '💃',
+        color: '#F3E5F5'
+      },
+      {
+        id: 3,
+        name: '인인극회',
+        category: 'Culture Division',
+        description: 'Theater Club - Explore acting, directing, and theatrical productions.',
+        members: 32,
+        location: 'Theater',
+        logo: '🎭',
+        color: '#FFF3E0'
+      }
+    ];
+    
+    setTopClubs(clubs);
+  }, []);
 
-  const jobs = [
-    {
-      id: 1,
-      title: 'Software Engineer',
-      location: 'Seoul, South Korea • Full-time'
-    }
-  ];
+  // Set top 3 jobs from the jobs list
+  useEffect(() => {
+    // Top 3 jobs from the jobs list
+    const jobs = [
+      {
+        id: 1,
+        title: 'Solder Paste Technology Developer',
+        company: '엠케이전자',
+        location: 'Eumseong-gun, Chungcheongbuk-do',
+        schedule: 'Temporary',
+        logo: 'https://dw42ybivffkam.cloudfront.net/0d0725c0-6762-42a5-9955-ede5e6e849c3.jpeg?format=auto&width=1920&quality=100',
+        color: '#E3F2FD',
+        category: 'R&D'
+      },
+      {
+        id: 2,
+        title: 'Recruiting foreign service/marketing planning/publisher',
+        company: '(주)전북은행',
+        location: 'Yeongdeungpo-gu, Seoul',
+        schedule: 'Intern',
+        logo: 'https://dw42ybivffkam.cloudfront.net/9cf33b0c-62b6-4251-92eb-4bd181b764c2.png?format=auto&width=1920&quality=100',
+        color: '#E8F5E8',
+        category: 'Marketing/Ads'
+      },
+      {
+        id: 3,
+        title: 'Recruitment for Samji Electronics Signal Processing Team',
+        company: '삼지전자',
+        location: 'Hwaseong-si, Gyeonggi-do',
+        schedule: 'Full Time',
+        logo: 'https://dw42ybivffkam.cloudfront.net/8d2d9b78-d325-4d5f-af08-0270e53b7b63.png?format=auto&width=1920&quality=100',
+        color: '#FFF3E0',
+        category: 'IT'
+      }
+    ];
+    
+    setTopJobs(jobs);
+  }, []);
 
   return (
     <Container>
@@ -324,10 +383,17 @@ const Home = () => {
         <LoadingText>No popular posts available</LoadingText>
       )}
 
-      <SectionTitle>Clubs</SectionTitle>
-      {clubs.map(club => (
-        <ClubCard key={club.id} onClick={() => navigate(`/clubs/${club.id}`)}>
-          <ClubImage color={club.color} />
+      <SectionTitle>
+        Clubs
+        <ViewAllButton onClick={() => navigate('/clubs')}>
+          View All
+        </ViewAllButton>
+      </SectionTitle>
+      {topClubs.map(club => (
+        <ClubCard key={club.id} onClick={() => navigate('/clubs')}>
+          <ClubImage color={club.color}>
+            <span style={{ fontSize: '24px' }}>{club.logo}</span>
+          </ClubImage>
           <ClubContent>
             <ClubName>{club.name}</ClubName>
             <ClubDescription>{club.description}</ClubDescription>
@@ -335,13 +401,26 @@ const Home = () => {
         </ClubCard>
       ))}
 
-      <SectionTitle>Jobs</SectionTitle>
-      {jobs.map(job => (
-        <JobCard key={job.id} onClick={() => navigate('/jobs')}>
-          <JobTitle>{job.title}</JobTitle>
-          <JobLocation>{job.location}</JobLocation>
-          <ApplyButton onClick={(e) => { e.stopPropagation(); navigate('/jobs'); }}>Apply</ApplyButton>
-        </JobCard>
+      <SectionTitle>
+        Jobs
+        <ViewAllButton onClick={() => navigate('/jobs')}>
+          View All
+        </ViewAllButton>
+      </SectionTitle>
+      {topJobs.map(job => (
+        <ClubCard key={job.id} onClick={() => navigate('/jobs')}>
+          <ClubImage color={job.color}>
+            {job.logo.startsWith('http') ? (
+              <img src={job.logo} alt={job.company} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
+            ) : (
+              <span style={{ fontSize: '24px' }}>{job.logo}</span>
+            )}
+          </ClubImage>
+          <ClubContent>
+            <ClubName>{job.title}</ClubName>
+            <ClubDescription>{job.company} • {job.location}</ClubDescription>
+          </ClubContent>
+        </ClubCard>
       ))}
     </Container>
   );
