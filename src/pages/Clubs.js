@@ -206,60 +206,70 @@ const Clubs = () => {
     {
       "division": "CULTURE",
       "name": "INUO",
+      "location": "11-405",
       "summary": "Orchestra Club - Experience classical music and orchestral performances with fellow musicians.",
       "description": "Incheon National University Orchestra (INUO) is an orchestra club founded in 2016 by students with a passion for classical music and performance. Since its founding, INUO has been actively performing through internal concerts, skill improvement performances, and various external events. Through these performances, members develop their musical skills and gain valuable stage experience.\n\nUsing the University Orchestra as a stepping stone, the club pursues musical exchange and development through joint performances with other university orchestras in the Incheon area. This place, where passionate and talented members help each other grow musically, is open to anyone who loves music.\n\nThe regular concert is INUO's most important annual event, a large-scale stage where not only club members but also alumni and students from other universities participate as guests. It leaves a deep impression on the audience with high-level performances every year and shows INUO's musical skills and passion.\n\nThe Skill Improvement Concert is a stage that any INUO member can participate in, providing opportunities for new members who have not learned an instrument for long to experience their own growth on stage. Regardless of playing skills, all members gather together to practice and perform, encourage each other, and build musical confidence.\n\nThe University Union Orchestra is a program hosted by Conductor Ben Kim, providing special opportunities for orchestras from various universities in the Incheon area to come together and perform. Through this program, students from each university can perform together on one stage, share their musical skills, and grow while gaining various styles and experiences.\n\nIn addition to performance activities, INUO provides time for members to communicate and interact through various social activities such as MT, group performance viewing, and after-performance parties. Don't hesitate to join the club!"
     },
     {
       "division": "CULTURE",
       "name": "IUDC",
+      "location": "17-406",
       "summary": "Dance Club - Express yourself through various dance styles and choreography.",
       "description": "IUDC is a dance club that loves all genres of dance, not limited to K-POP, HIPHOP, and more!\n\nWe perform and film on big stages such as OT, festivals, and regular performances, which are the highlights of college life. We also film external support performances or videos ourselves and upload them to various SNS and YouTube!\n\nBecause it is a large club, you can meet people you don't easily meet in college life, have a wide range of interactions, and make unforgettable memories by filming on stage and in videos.\n\nAbove all! You can realize the college life you've been dreaming of!"
     },
     {
       "division": "CULTURE",
       "name": "인인극회",
+      "location": "17-205",
       "summary": "Theater Club - Explore acting, directing, and theatrical productions.",
       "description": "Start your theater journey right now!\n\nFounded in 1981, Inin Theater Society has been successfully holding regular performances and workshop performances every year.\n\nInin Theater Society aims to spread the charm and value of theater and contribute to the development of culture and arts on campus and in the local community. The club members are passionate and artistically talented students, and they focus on experimenting and exploring various theater genres and styles.\n\nThrough regular performances every year, we present creative and interesting theater works to the school. We cover a wide range of topics and genres, and we plan and direct works that span from classical to modern times. Through this, the club members develop their acting and directing skills, while also providing deep emotion and enjoyment to the audience.\n\nIn addition, through workshop performances, the club members provide opportunities to further improve their theater skills. The workshops encourage experimentation and exploration during the production process, and are used as an important platform to develop new ideas and approaches.\n\nOur club awaits you as a participant, not just a spectator. Here, you can freely explore the world of theater and improve your artistic abilities. You can experience collaboration and communication with your colleagues while demonstrating your passion and talent on stage.\n\nWe are waiting for you on the stage of Inin Theater."
     },
     {
       "division": "CULTURE",
       "name": "포크라인",
+      "location": "17-415",
       "summary": "Band Club - Create music and perform with acoustic and electric instruments.",
       "description": "Acoustic Band Folkline\nStudents of Incheon National University looking for a small resting place in their busy daily lives\n\nHello! We are Folkline, the acoustic band of Incheon National University.\nFolkline started in 1983 as a pure music creation and acoustic club, and has a long history of 72 regular performances, KTX sponsorship, external events, and on-campus busking events over the past 41 years.\n\nWe plan each semester specifically, including an opening ceremony, MT, vacation project performance, regular performance (presentation), and after-performance party.\n\nMusic is a culture that anyone can understand and share, regardless of gender or age.\n\nWouldn't coming to the club, learning guitar, singing together, and enjoying it all be a way to live in this cold, frozen world?\n\nThis year, in 2023, Folkline is recruiting its 41st freshmen.\n\nBe the main character on this stage with Folkline."
     },
     {
       "division": "CULTURE",
       "name": "젊은영상",
+      "location": "11-407",
       "summary": "Video Production Club - Learn filmmaking, editing, and video production techniques.",
       "description": "Our club was born in March 1985 under the name of 'Cinema', and later changed its name to 'Young Film' in March 1988.\n\nOur club has held the 'Young Film Festival' and the 'Creative Film Festival' every year.\n\nAt the 'Young Film Festival', we screened films that you may not normally have access to, grouped by theme.\n\nIn 1999, we screened 'Secret Garden', 'Listen Up', 'Sorrow', and 'Shining' under the theme of 'Life is Beautiful' (희-노-애-락).\n\nThe 'Creative Film Festival' is a film festival where we screen films that we made ourselves.\n\nAs a gathering of people who love movies, we show short films created with passion for creation.\n\nYou can learn the joy of filmmaking as our club members take charge of almost every aspect, from scenarios, filming, lighting, acting, and directing.\n\nAnyone who likes movies, come visit us!"
     },
     {
       "division": "CULTURE",
       "name": "함성",
+      "location": "17-413",
       "summary": "Band Club - Rock and contemporary music performances and jam sessions.",
       "description": "Hamsung is a club belonging to the Cultural Department of the Central Club at Incheon University. Established in 1988, it has a rich history of 34 years as of 2023.\n\nIn 2022, the club performed at the Incheon University freshman orientation event, summer festival performances, and busker shows targeting university students in the Incheon area. It has also participated in school festival stages and activities with the Incheon university student band union. Regular performances were held in the school's small theater in the first semester and at the Seoul Prism Hall in the second semester. In 2023, Hamsung conducted busking and summer festival performances, with two regular performances scheduled for the summer.\n\nHamsung is open to anyone who has the willingness and passion to learn, regardless of their performance experience."
     },
     {
       "division": "CULTURE",
       "name": "UIAC(산악부)",
+      "location": "17-412",
       "summary": "Mountaineering (Climbing) Club - Explore mountains and develop climbing skills.",
       "description": "-University of Incheon Alpine Club-\n\nEnjoy UNIV!! Enjoy UIAC!!\n\nThe Incheon University Mountaineering Club is a central club registered as the first club at the time of the university's establishment in 1979!\n\nThe mountaineering club engages in various mountain activities and sports, including sports climbing, rock climbing, hiking, ice climbing, and backpacking. Enjoying the flower paths of spring, the valleys of summer, the autumn foliage, and the winter snow, ridge traverses, and ice climbing on ice walls that refuse human footsteps are special activities that only the mountaineering club can offer!\n\nIn 2009, we made history as the first university mountaineering club to successfully summit the highest peaks on all seven continents, including Everest! We calmly document the lessons learned from the mountains and nature, creating a culture through our academic activities! The Incheon University Mountaineering Club is affiliated with the university mountaineering federation, allowing us to interact with mountaineering clubs from universities across the country, including those in Seoul and the metropolitan area, providing opportunities for diverse experiences and meaningful times together.\n\nThe bond formed among club members, climbing together while trusting each other with the rope, is called the \"Rope Bond\"! The \"Rope Bond\" is an unbreakable and deeply rooted connection that surpasses everything else!\n\nWhen many students are asked about the mountaineering club, they usually respond with, 'It's cool,' 'I want to do it,' 'But it's dangerous,' or 'I'm not confident.' While there may be challenges and fears compared to other clubs, it is precisely now that we can challenge ourselves and enjoy it!!\n\nOur mountaineering club proudly believes that we are a progressive club that grows alongside the university, with a passion for the mountains and a serious spirit of inquiry that is second to none."
     },
     {
       "division": "SPORTS",
       "name": "다크호스",
+      "location": "17-318",
       "summary": "Table Tennis Club - Improve your ping pong skills through regular practice and tournaments.",
       "description": "Hello! We are the Dark Horse Table Tennis Club at Incheon University!\n\n→ We have the second largest club room in the Student Union (Building 17), where you can play table tennis.\n→ Besides table tennis, there are many activities like board games and poker.\n→ Senior members provide basic lessons for newcomers who are starting out in table tennis.\n→ Our club members have various levels of table tennis skills! Even if you can't play, there's no problem being part of the club.\n→ We have about 32,568 table tennis balls and rackets that can be used by any member!\n→ There are beds, desks, and lockers available! It's great during exam periods, and you can also keep your books there.\n→ We participate in table tennis tournaments such as the Gyeonggi Province University Table Tennis Tournament and the National University Table Tennis Tournament, providing many opportunities to compete with students from other schools and to build friendships, regardless of skill level."
     },
     {
       "division": "SPORTS",
       "name": "PANG",
+      "location": "17-313",
       "summary": "Table Tennis Club - Competitive table tennis training and inter-university matches.",
       "description": "The Central Club Squash Club PANG gathers Incheon University students who love squash and promotes their health. We regularly engage in the sport of \"squash\" and also plan and conduct internal club competitions, as well as training for competitions in Incheon City. Currently, due to the COVID-19 situation, the club is experiencing some inconveniences in its operations, but we are adhering to the government-designated quarantine guidelines while continuing our activities.\n\nThe club is currently located in Room 313 of the Student Hall, and you can find more activity photos and information by searching for inu_squash on the club's Instagram. This club is open to anyone who wants to diet, is interested in squash, or wants to relieve stress with the sound of the ball hitting the wall and bursting PANGPANG."
     },
     {
       "division": "SPORTS",
       "name": "UITC",
+      "location": "17-303",
       "summary": "Tennis Club - Learn tennis techniques and participate in friendly matches.",
       "description": "Hello! We are UITC, the tennis club at Incheon University.\n\nMost of our club members are experiencing tennis for the first time after joining the club! Our senior members will teach you the basics, starting from how to hold a racket. After mastering the fundamentals, members can play games together to improve their tennis skills.\n\nIn addition to weekly club activities, you can also socialize in the club room at any time!\n\nThere are opportunities to gain experience and meet new people through exchange matches with various schools, such as Inha University and Kyongin National University of Education.\n\nNot only exchange matches, but by participating in various national tennis club tournaments like the Gyeongin District Championship, Yanggu Open, and Chuncheon Open, you can have even more fulfilling club activities!\n\nWe are always waiting for you at UITC, Room 303 of the Student Welfare Center (Building 17). Thank you!"
     },

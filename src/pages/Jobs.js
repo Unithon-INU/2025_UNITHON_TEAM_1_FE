@@ -269,9 +269,9 @@ const Jobs = () => {
       "title": "Recruitment for Samji Electronics Signal Processing Team",
       "company": "삼지전자",
       "logo": "https://dw42ybivffkam.cloudfront.net/8d2d9b78-d325-4d5f-af08-0270e53b7b63.png?format=auto&width=1920&quality=100",
-      "jobField": "Etc",
+      "jobField": "IT",
       "type": "Full Time",
-      "visa": "Employment Visa (E1~E7)",
+      "visa": "E1~E7",
       "salary": "Follow Company Inner Rule",
       "location": "63-27 Geumgok-ro, Hwaseong-si, Gyeonggi-do, Republic of Korea",
       "schedule": "Mon to Fri, 08:30 ~ 17:30",
@@ -300,7 +300,7 @@ const Jobs = () => {
       "logo": "https://dw42ybivffkam.cloudfront.net/6f12a921-6b4c-4784-a182-723fd71abb90.png?format=auto&width=1920&quality=100",
       "jobField": "IT",
       "type": "Full Time",
-      "visa": "Employment Visa (E1~E7), Job Seeking Visa (D10), Residence (F2), Overseas Korean (F4), Permanent Residence (F5), International Marriage (F6)",
+      "visa": "E1~E7, D10, F2, F4, F5, F6",
       "salary": "Decision After Interview",
       "location": "14, Galmachi-ro 288beon-gil, Jungwon-gu, Seongnam-si, Gyeonggi-do, Republic of Korea",
       "schedule": "Mon to Fri, 09:00 ~ 18:00",
@@ -323,9 +323,9 @@ const Jobs = () => {
       "title": "Global Business Development Manager (US RTM Market)",
       "company": "주식회사 엑소시스템즈",
       "logo": "https://dw42ybivffkam.cloudfront.net/2e1cfad9-e1e0-48f7-8ee3-6d69a82c19ca.png?format=auto&width=1920&quality=100",
-      "jobField": "Marketing/Ads",
+      "jobField": "Marketing",
       "type": "Full Time",
-      "visa": "Employment Visa (E1~E7), International Marriage (F6), Residence (F2), Overseas Korean (F4), Permanent Residence (F5)",
+      "visa": "E1~E7, F6, F2, F4, F5",
       "salary": "Follow Company Inner Rule",
       "location": "43 Changeop-ro, Sujeong-gu, Seongnam-si, Gyeonggi-do, Republic of Korea",
       "schedule": "Mon, Tue, Wed, Thu, Fri / 09:30 ~ 18:30",
@@ -350,7 +350,7 @@ const Jobs = () => {
       "title": "English-Speaking Influencer Marketing Intern",
       "company": "(주)어댑트",
       "logo": "https://dw42ybivffkam.cloudfront.net/fc0b4940-40bb-47bd-b480-19346ad90543.png?format=auto&width=1920&quality=100",
-      "jobField": "Marketing/Ads",
+      "jobField": "Marketing",
       "type": "Intern",
       "visa": "D10, E1~E7, F1, F2, F3, F4, F5, F6",
       "salary": "Follow Company Inner Rule",
@@ -432,8 +432,6 @@ const Jobs = () => {
               </DetailItem>
               {job.visa && (
                 <DetailItem>
-                  <BusinessIcon fontSize="small" />
-                  Visa: {job.visa}
                 </DetailItem>
               )}
             </JobDetails>

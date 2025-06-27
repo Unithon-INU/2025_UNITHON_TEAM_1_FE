@@ -10,6 +10,7 @@ import {
   Share as ShareIcon,
   Send as SendIcon,
   Delete as DeleteIcon,
+  Close as CloseIcon,
 } from '@mui/icons-material';
 
 const Container = styled.div`
@@ -849,18 +850,22 @@ const CommunityPostDetail = () => {
         </BackButton>
         <Title>Post</Title>
         {isLoggedIn && (
-          <div style={{ display: 'flex', gap: '8px' }}>
-            <button onClick={handleEditPost} style={{ padding: '4px 8px', fontSize: '12px' }}>
-              Edit
-            </button>
-            <button 
-              onClick={handleDeletePost} 
-              style={{ padding: '4px 8px', fontSize: '12px', background: '#f44336', color: 'white', border: 'none', borderRadius: '4px' }}
-            >
-              Delete
-            </button>
-        </div>
-      )}
+          <button 
+            onClick={handleDeletePost} 
+            style={{ 
+              background: 'none', 
+              border: 'none', 
+              padding: '8px', 
+              cursor: 'pointer', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              borderRadius: '4px'
+            }}
+          >
+            <DeleteIcon style={{ color: '#757575', fontSize: '20px' }} />
+          </button>
+        )}
     </Header>
 
     <Content>
@@ -918,7 +923,7 @@ const CommunityPostDetail = () => {
               {user && comment.nickname === user.nickname && (
                 <CommentActions>
                   <DeleteButton onClick={() => handleDeleteComment(comment.id)}>
-                    <DeleteIcon />
+                    <CloseIcon />
                   </DeleteButton>
                 </CommentActions>
               )}

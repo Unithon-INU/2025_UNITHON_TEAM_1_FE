@@ -153,21 +153,7 @@ const Requirement = styled.div.withConfig({
   color: ${props => props.met ? '#4CAF50' : '#666'};
 `;
 
-const Select = styled.select`
-  width: 100%;
-  padding: 14px;
-  border: 2px solid #E0E0E0;
-  border-radius: 12px;
-  font-size: 16px;
-  background: white;
-  transition: border-color 0.3s ease;
-  box-sizing: border-box;
-  
-  &:focus {
-    outline: none;
-    border-color: #667eea;
-  }
-`;
+
 
 const CheckboxGroup = styled.div`
   display: flex;
@@ -221,26 +207,6 @@ const RegisterButton = styled.button`
     cursor: not-allowed;
     transform: none;
     box-shadow: none;
-  }
-`;
-
-const Divider = styled.div`
-  display: flex;
-  align-items: center;
-  margin: 20px 0;
-  
-  &::before,
-  &::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: #E0E0E0;
-  }
-  
-  span {
-    padding: 0 20px;
-    font-size: 14px;
-    color: #666;
   }
 `;
 

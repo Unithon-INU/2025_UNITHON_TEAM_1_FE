@@ -312,12 +312,82 @@ const LoadingText = styled.div`
   padding: 20px;
 `;
 
+const GuideCard = styled.div`
+  background: transparent;
+  padding: 16px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+
+  &:hover {
+    opacity: 0.8;
+  }
+`;
+
+const GuideIcon = styled.div`
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: ${props => props.color || '#E3F2FD'};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+`;
+
+const GuideContent = styled.div`
+  flex: 1;
+`;
+
+const GuideTitle = styled.h3`
+  font-size: 16px;
+  font-weight: 600;
+  color: #333;
+  margin: 0 0 4px 0;
+`;
+
+const GuideDescription = styled.p`
+  font-size: 14px;
+  color: #757575;
+  margin: 0;
+  line-height: 1.4;
+`;
+
+const GuideCategory = styled.span`
+  font-size: 12px;
+  color: #2196F3;
+  background: #E3F2FD;
+  padding: 2px 8px;
+  border-radius: 12px;
+  margin-top: 8px;
+  display: inline-block;
+`;
+
+const SectionContainer = styled.div`
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 24px;
+  border: 1px solid #E0E0E0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.2s ease;
+  
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  }
+`;
+
 const Home = () => {
   const navigate = useNavigate();
   const { user, token, isLoggedIn } = useAuth();
   const [topPosts, setTopPosts] = useState([]);
   const [topClubs, setTopClubs] = useState([]);
   const [topJobs, setTopJobs] = useState([]);
+  const [topGuides, setTopGuides] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showNotifications, setShowNotifications] = useState(false);
   const [notifications, setNotifications] = useState([]);
@@ -599,11 +669,51 @@ const Home = () => {
     setTopJobs(jobs);
   }, []);
 
+  // Set top guides
+  useEffect(() => {
+    const guides = [
+      {
+        id: 1,
+        title: 'Foreign Student Guide',
+        description: 'Complete guide for international students studying in Korea.',
+        category: 'International',
+        icon: '🌍',
+        color: '#E8F5E8'
+      },
+      {
+        id: 2,
+        title: 'Job Application Guide',
+        description: 'Step-by-step guide on applying for internships and full-time positions through UniBus.',
+        category: 'Career',
+        icon: '💼',
+        color: '#FFF3E0'
+      },
+      {
+        id: 3,
+        title: 'Campus Navigation',
+        description: 'Find your way around campus with our comprehensive location guide.',
+        category: 'Campus',
+        icon: '🗺️',
+        color: '#F3E5F5'
+      },
+      {
+        id: 4,
+        title: 'Study Tips',
+        description: 'Effective study strategies and academic success tips for university students.',
+        category: 'Academic',
+        icon: '📚',
+        color: '#E3F2FD'
+      }
+    ];
+    
+    setTopGuides(guides);
+  }, []);
+
   return (
     <Container>
       <Header>
         <LogoImage src="https://unithon1-bucket.s3.ap-northeast-2.amazonaws.com/UniBus_logo.png" alt="UniBus Logo" />
-        <Title>Home</Title>
+        <Title>Unibus</Title>
         {isLoggedIn && (
           <NotificationButton onClick={handleNotificationButtonClick}>
             <NotificationsIcon style={{ fontSize: '24px', color: '#666' }} />
@@ -654,73 +764,100 @@ const Home = () => {
         </NotificationModal>
       )}
 
-      <SectionTitle>
-        Board
-        <ViewAllButton onClick={() => navigate('/community')}>
-          View All
-        </ViewAllButton>
-      </SectionTitle>
-      
-      {loading ? (
-        <LoadingText>Loading popular posts...</LoadingText>
-      ) : topPosts.length > 0 ? (
-        topPosts.map(post => (
-          <PostCard key={post.id} onClick={() => navigate(`/community/post/${post.id}`)}>
-            <PostImage color={getAvatarColor(post.nickname)}>
-              {post.nickname.charAt(0).toUpperCase()}
-            </PostImage>
-            <PostContent>
-              <PostTitle>{post.title}</PostTitle>
-              <PostMeta>
-                <CategoryTag>{post.category}</CategoryTag>
-                <LikeCount>♡ {getTotalLikeCount(post)}</LikeCount> • {post.commentCount} comments • {formatDate(post.createdAt)}
-              </PostMeta>
-            </PostContent>
-          </PostCard>
-        ))
-      ) : (
-        <LoadingText>No popular posts available</LoadingText>
-      )}
+      <SectionContainer>
+        <SectionTitle>
+          Board
+          <ViewAllButton onClick={() => navigate('/community')}>
+            View All
+          </ViewAllButton>
+        </SectionTitle>
+        
+        {loading ? (
+          <LoadingText>Loading popular posts...</LoadingText>
+        ) : topPosts.length > 0 ? (
+          topPosts.map(post => (
+            <PostCard key={post.id} onClick={() => navigate(`/community/post/${post.id}`)}>
+              <PostImage color={getAvatarColor(post.nickname)}>
+                {post.nickname.charAt(0).toUpperCase()}
+              </PostImage>
+              <PostContent>
+                <PostTitle>{post.title}</PostTitle>
+                <PostMeta>
+                  <CategoryTag>{post.category}</CategoryTag>
+                  <LikeCount>♡ {getTotalLikeCount(post)}</LikeCount> • {post.commentCount} comments • {formatDate(post.createdAt)}
+                </PostMeta>
+              </PostContent>
+            </PostCard>
+          ))
+        ) : (
+          <LoadingText>No popular posts available</LoadingText>
+        )}
+      </SectionContainer>
 
-      <SectionTitle>
-        Clubs
-        <ViewAllButton onClick={() => navigate('/clubs')}>
-          View All
-        </ViewAllButton>
-      </SectionTitle>
-      {topClubs.map(club => (
-        <ClubCard key={club.id} onClick={() => navigate('/clubs')}>
-          <ClubImage color={club.color}>
-            <span style={{ fontSize: '24px' }}>{club.logo}</span>
-          </ClubImage>
-          <ClubContent>
-            <ClubName>{club.name}</ClubName>
-            <ClubDescription>{club.description}</ClubDescription>
-          </ClubContent>
-        </ClubCard>
-      ))}
+      <SectionContainer>
+        <SectionTitle>
+          Guides
+          <ViewAllButton onClick={() => navigate('/guides')}>
+            View All
+          </ViewAllButton>
+        </SectionTitle>
+        {topGuides.map(guide => (
+          <GuideCard key={guide.id} onClick={() => navigate(`/guides/${guide.id}`)}>
+            <GuideIcon color={guide.color}>
+              <span>{guide.icon}</span>
+            </GuideIcon>
+            <GuideContent>
+              <GuideTitle>{guide.title}</GuideTitle>
+              <GuideDescription>{guide.description}</GuideDescription>
+              <GuideCategory>{guide.category}</GuideCategory>
+            </GuideContent>
+          </GuideCard>
+        ))}
+      </SectionContainer>
 
-      <SectionTitle>
-        Jobs
-        <ViewAllButton onClick={() => navigate('/jobs')}>
-          View All
-        </ViewAllButton>
-      </SectionTitle>
-      {topJobs.map(job => (
-        <ClubCard key={job.id} onClick={() => navigate('/jobs')}>
-          <ClubImage color={job.color}>
-            {job.logo.startsWith('http') ? (
-              <img src={job.logo} alt={job.company} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
-            ) : (
-              <span style={{ fontSize: '24px' }}>{job.logo}</span>
-            )}
-          </ClubImage>
-          <ClubContent>
-            <ClubName>{job.title}</ClubName>
-            <ClubDescription>{job.company} • {job.location}</ClubDescription>
-          </ClubContent>
-        </ClubCard>
-      ))}
+      <SectionContainer>
+        <SectionTitle>
+          Clubs
+          <ViewAllButton onClick={() => navigate('/clubs')}>
+            View All
+          </ViewAllButton>
+        </SectionTitle>
+        {topClubs.map(club => (
+          <ClubCard key={club.id} onClick={() => navigate('/clubs')}>
+            <ClubImage color={club.color}>
+              <span style={{ fontSize: '24px' }}>{club.logo}</span>
+            </ClubImage>
+            <ClubContent>
+              <ClubName>{club.name}</ClubName>
+              <ClubDescription>{club.description}</ClubDescription>
+            </ClubContent>
+          </ClubCard>
+        ))}
+      </SectionContainer>
+
+      <SectionContainer>
+        <SectionTitle>
+          Jobs
+          <ViewAllButton onClick={() => navigate('/jobs')}>
+            View All
+          </ViewAllButton>
+        </SectionTitle>
+        {topJobs.map(job => (
+          <ClubCard key={job.id} onClick={() => navigate('/jobs')}>
+            <ClubImage color={job.color}>
+              {job.logo.startsWith('http') ? (
+                <img src={job.logo} alt={job.company} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
+              ) : (
+                <span style={{ fontSize: '24px' }}>{job.logo}</span>
+              )}
+            </ClubImage>
+            <ClubContent>
+              <ClubName>{job.title}</ClubName>
+              <ClubDescription>{job.company} • {job.location}</ClubDescription>
+            </ClubContent>
+          </ClubCard>
+        ))}
+      </SectionContainer>
     </Container>
   );
 };

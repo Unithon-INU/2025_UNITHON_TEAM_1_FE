@@ -15,6 +15,8 @@ import Clubs from './pages/Clubs';
 import ClubsPost from './pages/ClubsPost';
 import Jobs from './pages/Jobs';
 import JobsPostDetail from './pages/JobsPostDetail';
+import Guides from './pages/Guides';
+import GuideDetail from './pages/GuideDetail';
 import MyPage from './pages/MyPage';
 import PrivacySecurity from './pages/PrivacySecurity';
 import Login from './pages/Login';
@@ -70,6 +72,8 @@ function App() {
                 <Route path="/clubs/:clubName" element={<ClubsPost />} />
                 <Route path="/jobs" element={<Jobs />} />
                 <Route path="/jobs/:jobTitle" element={<JobsPostDetail />} />
+                <Route path="/guides" element={<Guides />} />
+                <Route path="/guides/:id" element={<GuideDetail />} />
                 <Route path="/mypage" element={<MyPage />} />
                 <Route path="/privacy-security" element={<PrivacySecurity />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
