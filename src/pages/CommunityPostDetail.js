@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAuth } from '../contexts/AuthContext';
@@ -9,6 +9,7 @@ import {
   ChatBubbleOutline as CommentIcon,
   Share as ShareIcon,
   Send as SendIcon,
+  Delete as DeleteIcon,
 } from '@mui/icons-material';
 
 const Container = styled.div`
@@ -300,6 +301,35 @@ const LoginLink = styled.button`
   }
 `;
 
+// Add these new styled components:
+const CommentActions = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+`;
+
+const DeleteButton = styled.button`
+  background: none;
+  border: none;
+  color: #bdbdbd;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 3px;
+  font-size: 12px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  
+  &:hover {
+    background: #ffebee;
+    color: #f44336;
+  }
+`;
+
 const CommunityPostDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -376,7 +406,7 @@ const CommunityPostDetail = () => {
   }, [id, isLoggedIn, token]);
 
   // Fetch like status from backend
-  const fetchLikeStatus = async () => {
+  const fetchLikeStatus = useCallback(async () => {
     if (!isLoggedIn || !token) return;
     
     try {
@@ -390,13 +420,13 @@ const CommunityPostDetail = () => {
       
       if (response.ok) {
         const data = await response.json();
-        setIsLiked(data.isLiked || false);
-        setLikes(data.totalLikes || data.likeCount || 0);
+        setIsLiked(data.liked || false);  // Changed from data.isLiked to data.liked
+        setLikes(data.likeCount || 0);     // Simplified this line
       }
     } catch (error) {
       console.error('Error fetching like status:', error);
     }
-  };
+  });
 
   // Handle like functionality with new backend API
   const handleLike = async () => {
@@ -728,6 +758,59 @@ const CommunityPostDetail = () => {
     }
   };
 
+  // Delete comment function
+  const handleDeleteComment = async (commentId) => {
+    if (!window.confirm('Are you sure you want to delete this comment?')) {
+      return;
+    }
+
+    let authToken = token || localStorage.getItem('token');
+    
+    if (!user || !authToken) {
+      alert('Please log in to delete comments.');
+      navigate('/login');
+      return;
+    }
+  
+    try {
+      const response = await fetch(`https://unithon1.shop/api/posts/${id}/comments/${commentId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`,
+        },
+      });
+  
+      if (!response.ok) {
+        if (response.status === 401) {
+          throw new Error('Authentication required. Please log in.');
+        } else if (response.status === 403) {
+          throw new Error('You can only delete your own comments.');
+        }
+        throw new Error(`Failed to delete comment: ${response.status}`);
+      }
+  
+      // Refresh comments after successful deletion
+      await fetchComments();
+      
+      // Update post comment count
+      setPost(prev => ({
+        ...prev,
+        commentCount: prev.commentCount - 1
+      }));
+  
+      alert('Comment deleted successfully');
+    } catch (error) {
+      console.error('Error deleting comment:', error);
+      if (error.message.includes('Authentication')) {
+        alert('Please log in to delete comments.');
+        navigate('/login');
+      } else {
+        alert(error.message || 'Failed to delete comment. Please try again.');
+      }
+    }
+  };
+
   if (loading) {
     return (
       <Container>
@@ -776,107 +859,114 @@ const CommunityPostDetail = () => {
             >
               Delete
             </button>
+        </div>
+      )}
+    </Header>
+
+    <Content>
+      <PostHeader>
+        <Avatar color={getAvatarColor(post.nickname)}>
+          {post.nickname.charAt(0).toUpperCase()}
+        </Avatar>
+        <PostInfo>
+          <Username>{post.nickname}</Username>
+          <PostTime>{formatDate(post.createdAt)}</PostTime>
+        </PostInfo>
+      </PostHeader>
+
+      <CategoryTag>{post.category}</CategoryTag>
+      <PostTitle>{post.title}</PostTitle>
+      <PostContent>{post.content}</PostContent>
+      {post.imageUrl && (
+        <PostImage src={post.imageUrl} alt="Post image" />
+      )}
+      
+      <PostActions>
+        <ActionButton 
+          onClick={handleLike} 
+          active={isLiked}
+          className={isLiked ? 'liked' : ''}
+        >
+          {isLiked ? (
+            <FavoriteIcon className="heart-icon" style={{ color: '#F44336' }} />
+          ) : (
+            <FavoriteBorderIcon className="heart-icon" />
+          )}
+          {likes}
+        </ActionButton>
+        <ActionButton>
+          <CommentIcon />
+          {post.commentCount}
+        </ActionButton>
+      </PostActions>
+
+      <CommentsSection>
+        <SectionTitle>Comments ({comments.length})</SectionTitle>
+        
+        {/* Display comments */}
+        {comments.map(comment => (
+          <CommentCard key={comment.id}>
+            <CommentHeader>
+              <CommentAvatar color={getAvatarColor(comment.nickname)}>
+                {comment.nickname ? comment.nickname.charAt(0).toUpperCase() : '?'}
+              </CommentAvatar>
+              <CommentInfo>
+                <CommentUsername>{comment.nickname || 'Anonymous'}</CommentUsername>
+                <CommentTime>{formatDate(comment.createdAt)}</CommentTime>
+              </CommentInfo>
+              {/* Show delete button only for comment owner */}
+              {user && comment.nickname === user.nickname && (
+                <CommentActions>
+                  <DeleteButton onClick={() => handleDeleteComment(comment.id)}>
+                    <DeleteIcon />
+                  </DeleteButton>
+                </CommentActions>
+              )}
+            </CommentHeader>
+            <CommentText>{comment.content}</CommentText>
+          </CommentCard>
+        ))}
+        
+        {comments.length === 0 && (
+          <div style={{ textAlign: 'center', color: '#757575', padding: '20px' }}>
+            No comments yet. Be the first to comment!
           </div>
         )}
-      </Header>
+      </CommentsSection>
+    </Content>
 
-      <Content>
-        <PostHeader>
-          <Avatar color={getAvatarColor(post.nickname)}>
-            {post.nickname.charAt(0).toUpperCase()}
-          </Avatar>
-          <PostInfo>
-            <Username>{post.nickname}</Username>
-            <PostTime>{formatDate(post.createdAt)}</PostTime>
-          </PostInfo>
-        </PostHeader>
-
-        <CategoryTag>{post.category}</CategoryTag>
-        <PostTitle>{post.title}</PostTitle>
-        <PostContent>{post.content}</PostContent>
-        {post.imageUrl && (
-          <PostImage src={post.imageUrl} alt="Post image" />
-        )}
-        
-        <PostActions>
-          <ActionButton 
-            onClick={handleLike} 
-            active={isLiked}
-            className={isLiked ? 'liked' : ''}
-          >
-            {isLiked ? (
-              <FavoriteIcon className="heart-icon" style={{ color: '#F44336' }} />
-            ) : (
-              <FavoriteBorderIcon className="heart-icon" />
-            )}
-            {likes}
-          </ActionButton>
-          <ActionButton>
-            <CommentIcon />
-            {post.commentCount}
-          </ActionButton>
-        </PostActions>
-
-        <CommentsSection>
-          <SectionTitle>Comments ({comments.length})</SectionTitle>
-          
-          {/* Display comments */}
-          {comments.map(comment => (
-            <CommentCard key={comment.id}>
-              <CommentHeader>
-                <CommentAvatar color={getAvatarColor(comment.nickname)}>
-                  {comment.nickname ? comment.nickname.charAt(0).toUpperCase() : '?'}
-                </CommentAvatar>
-                <CommentInfo>
-                  <CommentUsername>{comment.nickname || 'Anonymous'}</CommentUsername>
-                  <CommentTime>{formatDate(comment.createdAt)}</CommentTime>
-                </CommentInfo>
-              </CommentHeader>
-              <CommentText>{comment.content}</CommentText>
-            </CommentCard>
-          ))}
-          
-          {comments.length === 0 && (
-            <div style={{ textAlign: 'center', color: '#757575', padding: '20px' }}>
-              No comments yet. Be the first to comment!
-            </div>
-          )}
-        </CommentsSection>
-      </Content>
-
-      {/* Comment input */}
-      {isLoggedIn ? (
-        <CommentInputContainer>
-          <CommentInput
-            value={comment}
-            onChange={(e) => setComment(e.target.value)}
-            placeholder="Write a comment..."
-            onKeyPress={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                handleCommentSubmit();
-              }
-            }}
-          />
-          <CommentButton 
-            onClick={handleCommentSubmit}
-            disabled={commentLoading || !comment.trim()}
-          >
-            <SendIcon />
-          </CommentButton>
-        </CommentInputContainer>
-      ) : (
-        <LoginPromptComment>
-          <LoginText>Please log in to comment</LoginText>
-          <LoginLink onClick={() => navigate('/login')}>
-            Log In
-          </LoginLink>
-        </LoginPromptComment>
-      )}
-    </Container>
-  );
-};
-
+    {/* Comment input */}
+    {isLoggedIn ? (
+      <CommentInputContainer>
+        <CommentInput
+          value={comment}
+          onChange={(e) => setComment(e.target.value)}
+          placeholder="Write a comment..."
+          onKeyPress={(e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault();
+              handleCommentSubmit();
+            }
+          }}
+        />
+        <CommentButton 
+          onClick={handleCommentSubmit}
+          disabled={commentLoading || !comment.trim()}
+        >
+          <SendIcon />
+        </CommentButton>
+      </CommentInputContainer>
+    ) : (
+      <LoginPromptComment>
+        <LoginText>Please log in to comment</LoginText>
+        <LoginLink onClick={() => navigate('/login')}>
+          Log In
+        </LoginLink>
+      </LoginPromptComment>
+    )}
+  </Container>
+);
+}
 // Helper functions (same as in Community.js)
 const getAvatarColor = (nickname) => {
   const colors = ['#FF6B6B', '#F3E5F5', '#E8F5E8', '#FFF3E0', '#E3F2FD'];
