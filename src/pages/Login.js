@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import {
   Visibility as VisibilityIcon,
   VisibilityOff as VisibilityOffIcon,
-  Google as GoogleIcon,
 } from '@mui/icons-material';
 
 const Container = styled.div`
@@ -168,27 +167,6 @@ const Divider = styled.div`
   }
 `;
 
-const GoogleButton = styled.button`
-  width: 100%;
-  padding: 16px;
-  border: 2px solid #E1E5E9;
-  border-radius: 12px;
-  background: white;
-  color: #333;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
-  
-  &:hover {
-    border-color: #4285F4;
-    box-shadow: 0 4px 12px rgba(66, 133, 244, 0.15);
-  }
-`;
 
 const SignupPrompt = styled.p`
   text-align: center;
@@ -301,11 +279,6 @@ const Login = () => {
     }
   };
 
-  const handleGoogleLogin = () => {
-    console.log('Initiating Google OAuth...');
-    alert('Google login integration will be implemented with OAuth 2.0');
-  };
-
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
@@ -362,15 +335,6 @@ const Login = () => {
             {isLoading ? 'Signing In...' : 'Sign In'}
           </LoginButton>
         </Form>
-
-        <Divider>
-          <span>or</span>
-        </Divider>
-
-        <GoogleButton type="button" onClick={handleGoogleLogin}>
-          <GoogleIcon style={{ color: '#4285F4' }} />
-          Continue with Google
-        </GoogleButton>
 
         <SignupPrompt>
           Don't have an account?{' '}

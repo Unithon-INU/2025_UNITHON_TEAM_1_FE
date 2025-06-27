@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import {
   Visibility as VisibilityIcon,
   VisibilityOff as VisibilityOffIcon,
-  Google as GoogleIcon,
   CheckCircle as CheckIcon,
   Cancel as CancelIcon,
 } from '@mui/icons-material';
@@ -245,28 +244,6 @@ const Divider = styled.div`
   }
 `;
 
-const GoogleButton = styled.button`
-  width: 100%;
-  padding: 16px;
-  background: white;
-  color: #333;
-  border: 2px solid #E0E0E0;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  transition: all 0.3s ease;
-  
-  &:hover {
-    border-color: #4285F4;
-    box-shadow: 0 4px 12px rgba(66, 133, 244, 0.15);
-  }
-`;
-
 const LoginPrompt = styled.div`
   text-align: center;
   margin-top: 20px;
@@ -284,10 +261,13 @@ const LoginLink = styled(Link)`
   }
 `;
 
+// Remove the GoogleButton styled component
+// Remove the Divider styled component
+
 const Register = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    nickname: '', // ✅ Properly initialized
+    nickname: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -399,11 +379,6 @@ const Register = () => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleGoogleRegister = () => {
-    console.log('Initiating Google OAuth registration...');
-    alert('Google registration integration will be implemented with OAuth 2.0');
   };
 
   return (
@@ -532,7 +507,7 @@ const Register = () => {
               onChange={handleInputChange}
             />
             <CheckboxLabel htmlFor="agreeToTerms">
-              I agree to the <a href="/terms">Terms of Service</a> and <a href="/privacy">Privacy Policy</a>
+              I agree to the <Link to="/terms-of-service" style={{color: '#667eea', textDecoration: 'underline'}}>Terms of Service</Link> and <Link to="/privacy-policy" style={{color: '#667eea', textDecoration: 'underline'}}>Privacy Policy</Link>
             </CheckboxLabel>
           </CheckboxGroup>
           {errors.agreeToTerms && <ErrorMessage>{errors.agreeToTerms}</ErrorMessage>}
@@ -542,14 +517,7 @@ const Register = () => {
           </RegisterButton>
         </Form>
 
-        <Divider>
-          <span>or</span>
-        </Divider>
-
-        <GoogleButton type="button" onClick={handleGoogleRegister}>
-          <GoogleIcon style={{ color: '#4285F4' }} />
-          Sign up with Google
-        </GoogleButton>
+        {/* Remove the Divider and GoogleButton */}
 
         <LoginPrompt>
           Already have an account?{' '}

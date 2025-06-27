@@ -222,7 +222,14 @@ const Community = () => {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [showSearch, setShowSearch] = useState(false);
 
-  const filters = ['All', 'HOUSING', 'JOBS', 'STUDY', 'SOCIAL', 'HELP'];
+  // Display filters in Title Case for better UX
+  const filters = ['All', 'Housing', 'Jobs', 'Study', 'Social', 'Help'];
+  
+  // Helper function to convert display filter to backend format
+  const getBackendCategory = (displayFilter) => {
+    if (displayFilter === 'All') return null;
+    return displayFilter.toUpperCase(); // Convert to uppercase for backend
+  };
 
   // Helper function to get total like count
   const getTotalLikeCount = (post) => {
@@ -239,8 +246,9 @@ const Community = () => {
         let url = 'https://unithon1.shop/api/posts';
         const params = new URLSearchParams();
         
-        if (activeFilter !== 'All') {
-          params.append('category', activeFilter);
+        const backendCategory = getBackendCategory(activeFilter);
+        if (backendCategory) {
+          params.append('category', backendCategory); // Send uppercase to backend
         }
         
         if (searchKeyword.trim()) {

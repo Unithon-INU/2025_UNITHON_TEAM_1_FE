@@ -31,23 +31,6 @@ const LogoImage = styled.img`
   z-index: 1;
 `;
 
-const TabContainer = styled.div`
-  display: flex;
-  margin-bottom: 20px;
-  border-bottom: 1px solid #E0E0E0;
-`;
-
-const Tab = styled.button`
-  background: none;
-  border: none;
-  padding: 12px 16px;
-  font-size: 16px;
-  font-weight: ${props => props.active ? '600' : '400'};
-  color: ${props => props.active ? '#333' : '#757575'};
-  border-bottom: ${props => props.active ? '2px solid #2196F3' : 'none'};
-  cursor: pointer;
-  margin-right: 20px;
-`;
 
 const SectionTitle = styled.h2`
   font-size: 18px;
@@ -170,47 +153,7 @@ const ClubDescription = styled.p`
   margin: 0;
 `;
 
-const JobCard = styled.div`
-  background: white;
-  border: 1px solid #E0E0E0;
-  border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 16px;
-  cursor: pointer;
-  
-  &:hover {
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  }
-`;
 
-const JobTitle = styled.h3`
-  font-size: 16px;
-  font-weight: 600;
-  color: #333;
-  margin: 0 0 8px 0;
-`;
-
-const JobLocation = styled.p`
-  font-size: 14px;
-  color: #757575;
-  margin: 0;
-`;
-
-const ApplyButton = styled.button`
-  background: #2196F3;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 16px;
-  font-size: 14px;
-  font-weight: 500;
-  margin-top: 12px;
-  cursor: pointer;
-  
-  &:hover {
-    background: #1976D2;
-  }
-`;
 
 const LoadingText = styled.div`
   text-align: center;
@@ -220,7 +163,6 @@ const LoadingText = styled.div`
 
 const Home = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('For You');
   const [topPosts, setTopPosts] = useState([]);
   const [topClubs, setTopClubs] = useState([]);
   const [topJobs, setTopJobs] = useState([]);

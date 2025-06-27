@@ -3,16 +3,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import {
   ArrowBack as ArrowBackIcon,
-  Favorite as FavoriteIcon,
-  FavoriteBorder as FavoriteBorderIcon,
-  Share as ShareIcon,
-  LocationOn as LocationIcon,
-  Schedule as ScheduleIcon,
-  People as PeopleIcon,
-  Email as EmailIcon,
-  Phone as PhoneIcon,
-  Language as WebsiteIcon,
-  Event as EventIcon,
 } from '@mui/icons-material';
 
 const Container = styled.div`

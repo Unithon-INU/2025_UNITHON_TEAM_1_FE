@@ -122,7 +122,9 @@ const PostActions = styled.div`
   margin-bottom: 24px;
 `;
 
-const ActionButton = styled.button`
+const ActionButton = styled.button.withConfig({
+  shouldForwardProp: (prop) => prop !== 'active',
+})`
   background: none;
   border: none;
   display: flex;
@@ -140,36 +142,8 @@ const ActionButton = styled.button`
     color: ${props => props.active ? '#F44336' : '#333'};
   }
   
-  /* Heart animation styles */
   .heart-icon {
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    transform-origin: center;
-  }
-  
-  &.liked .heart-icon {
-    animation: heartPulse 0.6s ease-in-out;
-    color: #F44336;
-  }
-  
-  @keyframes heartPulse {
-    0% {
-      transform: scale(1);
-    }
-    15% {
-      transform: scale(1.3);
-    }
-    30% {
-      transform: scale(1.1);
-    }
-    50% {
-      transform: scale(1.4);
-    }
-    70% {
-      transform: scale(1.2);
-    }
-    100% {
-      transform: scale(1);
-    }
+    font-size: 18px;
   }
 `;
 
@@ -286,29 +260,6 @@ const CommentButton = styled.button`
   }
 `;
 
-const SendButton = styled.button`
-  background: #2196F3;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  
-  &:hover {
-    background: #1976D2;
-  }
-  
-  &:disabled {
-    background: #E0E0E0;
-    cursor: not-allowed;
-  }
-`;
-
 const LoginPromptComment = styled.div`
   display: flex;
   align-items: center;
@@ -351,9 +302,8 @@ const CommunityPostDetail = () => {
   const [likes, setLikes] = useState(0);
   const [comments, setComments] = useState([]);
   const [commentLoading, setCommentLoading] = useState(false);
+  const [isEditing, setIsEditing] = useState(false); // Add this line
   
-  // Add edit state management
-  const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
     category: '',
     title: '',

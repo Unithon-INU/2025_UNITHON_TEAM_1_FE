@@ -65,15 +65,9 @@ const IconButton = styled.button`
   }
 `;
 
-const FilterContainer = styled.div`
-  display: flex;
-  padding: 16px 20px;
-  gap: 12px;
-  border-bottom: 1px solid #E0E0E0;
-  overflow-x: auto;
-`;
-
-const FilterChip = styled.button`
+const FilterChip = styled.button.withConfig({
+  shouldForwardProp: (prop) => prop !== 'active'
+})`
   background: ${props => props.active ? '#2196F3' : '#F5F5F5'};
   color: ${props => props.active ? 'white' : '#757575'};
   border: none;
@@ -84,9 +78,24 @@ const FilterChip = styled.button`
   cursor: pointer;
   transition: all 0.3s ease;
   white-space: nowrap;
+  flex-shrink: 0;
   
   &:hover {
     background: ${props => props.active ? '#1976D2' : '#E0E0E0'};
+  }
+`;
+
+const FilterContainer = styled.div`
+  display: flex;
+  padding: 16px 20px;
+  gap: 12px;
+  border-bottom: 1px solid #E0E0E0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  
+  &::-webkit-scrollbar {
+    display: none;
   }
 `;
 
