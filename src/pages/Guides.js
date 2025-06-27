@@ -139,6 +139,22 @@ function Guides() {
         category: 'Academic',
         icon: '📚',
         color: '#2196F3'
+      },
+      {
+        id: 5,
+        title: 'Visa Tips',
+        description: 'Complete guide to Korean visa types, requirements, and application processes for international students.',
+        category: 'International',
+        icon: '📋',
+        color: '#FF5722'
+      },
+      {
+        id: 6,
+        title: 'Health Insurance Guide',
+        description: 'Complete guide to Korean National Health Insurance (NHIS) for international students.',
+        category: 'International',
+        icon: '🏥',
+        color: '#E91E63'
       }
     ];
     setGuides(guideData);

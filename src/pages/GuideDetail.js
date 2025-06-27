@@ -216,6 +216,22 @@ function GuideDetail() {
         category: 'Academic',
         icon: '📚',
         color: '#2196F3'
+      },
+      '5': {
+        id: 5,
+        title: 'Visa Tips',
+        description: 'Complete guide to Korean visa types, requirements, and application processes for international students.',
+        category: 'Academic',
+        icon: '📋',
+        color: '#FF5722'
+      },
+      '6': {
+        id: 6,
+        title: 'Health Insurance Guide',
+        description: 'Complete guide to Korean National Health Insurance (NHIS) for international students.',
+        category: 'Academic',
+        icon: '🏥',
+        color: '#E91E63'
       }
     };
 
@@ -911,6 +927,216 @@ function GuideDetail() {
               </div>
             </InfoBox>
           </GuideContent>
+
+          {/* Visa Information Section */}
+          <GuideContent>
+            <SectionTitle>📋 Visa Information for Korea</SectionTitle>
+            <ContentText>
+              Understanding Korean visa requirements is crucial for international students. Different visa types serve different purposes, and it's essential to obtain the correct visa for your stay in Korea.
+            </ContentText>
+            
+            <SubsectionTitle>🎓 Student Visas (D-2 and D-4)</SubsectionTitle>
+            <ContentText>
+              <strong>D-2 Student Visa:</strong> For degree-seeking students (Bachelor's, Master's, PhD)<br/>
+              <strong>D-4 Korean Language Trainee:</strong> For Korean language course students<br/><br/>
+              <strong>Required Documents:</strong>
+            </ContentText>
+            <StepList>
+              <li>Valid passport (minimum 6 months validity)</li>
+              <li>Completed visa application form</li>
+              <li>Certificate of Admission from Korean university</li>
+              <li>Financial proof (bank statements, scholarship letters)</li>
+              <li>Academic transcripts and diplomas</li>
+              <li>Health certificate and tuberculosis test results</li>
+              <li>Passport photos (3.5cm x 4.5cm)</li>
+            </StepList>
+            
+            <InfoBox>
+              <div className="info-title">💡 Student Visa Tips</div>
+              <div className="info-content">
+                • Apply at Korean embassy/consulate in your home country<br/>
+                • Processing time: 5-10 business days<br/>
+                • D-2 visa allows part-time work (up to 20 hours/week with permit)<br/>
+                • Cannot change from tourist visa (C-3) to student visa within Korea
+              </div>
+            </InfoBox>
+            
+            <SubsectionTitle>🏢 Work Visas (E-1 to E-7)</SubsectionTitle>
+            <ContentText>
+              Korea offers various work visa categories for different professions:
+            </ContentText>
+            <StepList>
+              <li><strong>E-1 Professor:</strong> University-level teaching and research</li>
+              <li><strong>E-2 Foreign Language Instructor:</strong> English/foreign language teaching</li>
+              <li><strong>E-3 Researcher:</strong> Research work in specialized fields</li>
+              <li><strong>E-4 Technical Instructor:</strong> Technology and natural science experts</li>
+              <li><strong>E-5 Professional:</strong> Licensed professionals (lawyers, doctors, architects)</li>
+              <li><strong>E-6 Arts and Entertainment:</strong> Artists, athletes, entertainers</li>
+              <li><strong>E-7 Special Ability:</strong> Specialized workers with employment contracts</li>
+            </StepList>
+            
+            <SubsectionTitle>🌍 Tourist and Short-term Visas</SubsectionTitle>
+            <ContentText>
+              <strong>Visa-Free Entry:</strong> Many countries have visa-free agreements with Korea for stays up to 90 days<br/>
+              <strong>C-3 Short-term Visit:</strong> For tourism, business, family visits (90 days maximum)
+            </ContentText>
+            
+            <WarningBox>
+              <div className="warning-title">⚠️ Important Visa Warnings</div>
+              <div className="warning-content">
+                • Never work on a tourist visa - this is illegal<br/>
+                • Cannot change visa status without leaving Korea (except specific cases)<br/>
+                • Overstaying your visa results in fines and entry bans<br/>
+                • Always carry your passport and Alien Registration Card
+              </div>
+            </WarningBox>
+            
+            <SubsectionTitle>🔄 Visa Extensions and Changes</SubsectionTitle>
+            <StepList>
+              <li><strong>Extension Applications:</strong> Apply 2 months before expiration</li>
+              <li><strong>Required Documents:</strong> Application form, passport, financial proof, reason for extension</li>
+              <li><strong>Processing Location:</strong> Immigration office in your area</li>
+              <li><strong>Fees:</strong> Vary by visa type (typically 30,000-100,000 KRW)</li>
+            </StepList>
+            
+            <SubsectionTitle>📱 K-ETA (Korea Electronic Travel Authorization)</SubsectionTitle>
+            <ContentText>
+              For visa-free countries, K-ETA may be required for entry. As of 2024, K-ETA requirements are temporarily waived for US citizens until December 31, 2024, but check current requirements before travel.
+            </ContentText>
+            
+            <ContactInfo>
+              <div className="contact-title">📞 Visa and Immigration Contacts</div>
+              <div className="contact-item">Korea Immigration Service: 1345 (Korean, English, Chinese, Japanese)</div>
+              <div className="contact-item">Hi Korea (Immigration Portal): hikorea.go.kr</div>
+              <div className="contact-item">Korea Visa Portal: visa.go.kr</div>
+              <div className="contact-item">Nearest Immigration Office: Find location on hikorea.go.kr</div>
+            </ContactInfo>
+            
+            <InfoBox>
+              <div className="info-title">🎯 Visa Success Tips</div>
+              <div className="info-content">
+                • Start visa application process early (2-3 months before travel)<br/>
+                • Ensure all documents are properly translated and notarized<br/>
+                • Keep copies of all visa documents<br/>
+                • Register at immigration office within 90 days of arrival<br/>
+                • Maintain valid visa status throughout your stay
+              </div>
+            </InfoBox>
+          </GuideContent>
+
+          {/* Insurance Information Section */}
+          <GuideContent>
+            <SectionTitle>🏥 Health Insurance in Korea</SectionTitle>
+            <ContentText>
+              Health insurance is mandatory for all international students in Korea. Understanding the Korean National Health Insurance System (NHIS) and temporary coverage options is essential for your health and legal status.
+            </ContentText>
+            
+            <SubsectionTitle>🇰🇷 Korean National Health Insurance (NHIS)</SubsectionTitle>
+            <ContentText>
+              <strong>Mandatory Enrollment:</strong> All international students with D-2 and D-4 visas are automatically enrolled in NHIS upon alien registration.<br/>
+              <strong>Coverage Start Date:</strong> From your alien registration date (first entry) or re-entry date (subsequent entries)
+            </ContentText>
+            
+            <InfoBox>
+              <div className="info-title">📋 NHIS Enrollment by Visa Type</div>
+              <div className="info-content">
+                • <strong>D-2 Student Visa:</strong> Automatic enrollment from alien registration date<br/>
+                • <strong>D-4 Korean Language:</strong> 6 months after entry date<br/>
+                • <strong>F-4 Overseas Korean:</strong> From school entrance date<br/>
+                • No action required - NHIS processes enrollment automatically
+              </div>
+            </InfoBox>
+            
+            <SubsectionTitle>💰 Insurance Fees and Payment</SubsectionTitle>
+            <ContentText>
+              <strong>Monthly Premium (2024-2025):</strong> Approximately 76,390 KRW (~$60 USD)<br/>
+              <strong>Student Discount:</strong> 50% reduction available for eligible students
+            </ContentText>
+            
+            <StepList>
+              <li><strong>Eligibility for Discount:</strong> No income tax paid in previous year, household income below 3.6 million KRW, property tax base below 135 million KRW</li>
+              <li><strong>Payment Due:</strong> By the 25th of each month (prepayment for next month)</li>
+              <li><strong>Billing:</strong> Mailed to your registered address from the 10th of each month</li>
+              <li><strong>Payment Methods:</strong> Bank transfer, convenience stores, online, NHIS office</li>
+            </StepList>
+            
+            <SubsectionTitle>🏥 Coverage and Benefits</SubsectionTitle>
+            <ContentText>
+              International students receive the same benefits as Korean citizens:
+            </ContentText>
+            <StepList>
+              <li><strong>Inpatient Care:</strong> 80% coverage (you pay 20%)</li>
+              <li><strong>Outpatient Care:</strong> 30-70% coverage depending on facility type</li>
+              <li><strong>Dental Care:</strong> Covered for basic treatments</li>
+              <li><strong>Traditional Korean Medicine:</strong> Covered</li>
+              <li><strong>Health Checkups:</strong> Free biannual checkups based on birth year</li>
+              <li><strong>Pregnancy/Childbirth:</strong> Comprehensive coverage</li>
+            </StepList>
+            
+            <SubsectionTitle>⏰ Temporary Insurance (First 3 Months)</SubsectionTitle>
+            <ContentText>
+              <strong>Coverage Gap:</strong> NHIS enrollment takes 6-8 weeks after arrival, creating a coverage gap.<br/>
+              <strong>Requirement:</strong> You must have private health insurance for the first 2-3 months in Korea.
+            </ContentText>
+            
+            <WarningBox>
+              <div className="warning-title">⚠️ Critical Insurance Requirements</div>
+              <div className="warning-content">
+                • Bring proof of temporary health insurance before arrival<br/>
+                • Coverage must be valid from arrival date until NHIS activation<br/>
+                • Minimum coverage: 1 billion KRW for medical expenses<br/>
+                • Failure to provide proof may result in admission rescission
+              </div>
+            </WarningBox>
+            
+            <SubsectionTitle>📱 Managing Your NHIS Account</SubsectionTitle>
+            <StepList>
+              <li><strong>NHIS Card:</strong> Automatically mailed to your registered address</li>
+              <li><strong>Electronic Billing:</strong> Set up email/SMS billing by calling 033-811-2000</li>
+              <li><strong>Automatic Payment:</strong> Link to Korean bank account for convenience</li>
+              <li><strong>Address Changes:</strong> Report to nearest NHIS center immediately</li>
+              <li><strong>Family Coverage:</strong> Add spouse and children under 19 at NHIS office</li>
+            </StepList>
+            
+            <SubsectionTitle>🚫 Consequences of Non-Payment</SubsectionTitle>
+            <ContentText>
+              <strong>Health Benefits:</strong> Suspended until arrears are paid<br/>
+              <strong>Visa Extension:</strong> Blocked if overdue amount exceeds 500,000 KRW<br/>
+              <strong>Legal Status:</strong> May affect your ability to maintain student status
+            </ContentText>
+            
+            <SubsectionTitle>🔄 Insurance Exemption (Rare Cases)</SubsectionTitle>
+            <ContentText>
+              You may apply for NHIS exemption if you have equivalent foreign insurance coverage, but this requires:
+            </ContentText>
+            <StepList>
+              <li>Minimum 1 billion KRW medical coverage</li>
+              <li>Coverage for common diseases and injuries</li>
+              <li>Valid for your entire stay in Korea</li>
+              <li>Application at NHIS Center for Foreign Residents</li>
+              <li>Korean translation of insurance policy required</li>
+            </StepList>
+            
+            <ContactInfo>
+              <div className="contact-title">📞 NHIS Contact Information</div>
+              <div className="contact-item">NHIS Hotline: 033-811-2000 (English, Chinese, Vietnamese, Uzbek)</div>
+              <div className="contact-item">General Inquiry: 1577-1000 (Press 7 for foreign languages)</div>
+              <div className="contact-item">NHIS Website: nhis.or.kr/english</div>
+              <div className="contact-item">Hi Korea Portal: hikorea.go.kr</div>
+            </ContactInfo>
+            
+            <InfoBox>
+              <div className="info-title">💡 Insurance Success Tips</div>
+              <div className="info-content">
+                • Purchase temporary insurance before arriving in Korea<br/>
+                • Set up automatic payment to avoid late fees<br/>
+                • Keep your NHIS card with you at all times<br/>
+                • Register for electronic billing for faster communication<br/>
+                • Report address changes immediately to avoid billing issues<br/>
+                • Use health checkups - they're free and comprehensive
+              </div>
+            </InfoBox>
+          </GuideContent>
         </>
       )}
 
@@ -1143,7 +1369,225 @@ function GuideDetail() {
         </GuideContent>
       )}
 
-    </Container>
+      {id === '6' && (
+        <>
+          {/* Health Insurance Guide */}
+          <GuideContent>
+            <SectionTitle>🏥 Health Insurance in Korea</SectionTitle>
+            <ContentText>
+              Health insurance is mandatory for all international students in Korea. Understanding the Korean National Health Insurance System (NHIS) and temporary coverage options is essential for your health and legal status.
+            </ContentText>
+            
+            <SubsectionTitle>🇰🇷 Korean National Health Insurance (NHIS)</SubsectionTitle>
+            <ContentText>
+              <strong>Mandatory Enrollment:</strong> All international students with D-2 and D-4 visas are automatically enrolled in NHIS upon alien registration.<br/>
+              <strong>Coverage Start Date:</strong> From your alien registration date (first entry) or re-entry date (subsequent entries)
+            </ContentText>
+            
+            <InfoBox>
+              <div className="info-title">📋 NHIS Enrollment by Visa Type</div>
+              <div className="info-content">
+                • <strong>D-2 Student Visa:</strong> Automatic enrollment from alien registration date<br/>
+                • <strong>D-4 Korean Language:</strong> 6 months after entry date<br/>
+                • <strong>F-4 Overseas Korean:</strong> From school entrance date<br/>
+                • No action required - NHIS processes enrollment automatically
+              </div>
+            </InfoBox>
+            
+            <SubsectionTitle>💰 Insurance Fees and Payment</SubsectionTitle>
+            <ContentText>
+              <strong>Monthly Premium (2024-2025):</strong> Approximately 76,390 KRW (~$60 USD)<br/>
+              <strong>Student Discount:</strong> 50% reduction available for eligible students
+            </ContentText>
+            
+            <StepList>
+              <li><strong>Eligibility for Discount:</strong> No income tax paid in previous year, household income below 3.6 million KRW, property tax base below 135 million KRW</li>
+              <li><strong>Payment Due:</strong> By the 25th of each month (prepayment for next month)</li>
+              <li><strong>Billing:</strong> Mailed to your registered address from the 10th of each month</li>
+              <li><strong>Payment Methods:</strong> Bank transfer, convenience stores, online, NHIS office</li>
+            </StepList>
+            
+            <SubsectionTitle>🏥 Coverage and Benefits</SubsectionTitle>
+            <ContentText>
+              International students receive the same benefits as Korean citizens:
+            </ContentText>
+            <StepList>
+              <li><strong>Inpatient Care:</strong> 80% coverage (you pay 20%)</li>
+              <li><strong>Outpatient Care:</strong> 30-70% coverage depending on facility type</li>
+              <li><strong>Dental Care:</strong> Covered for basic treatments</li>
+              <li><strong>Traditional Korean Medicine:</strong> Covered</li>
+              <li><strong>Health Checkups:</strong> Free biannual checkups based on birth year</li>
+              <li><strong>Pregnancy/Childbirth:</strong> Comprehensive coverage</li>
+            </StepList>
+            
+            <SubsectionTitle>⏰ Temporary Insurance (First 3 Months)</SubsectionTitle>
+            <ContentText>
+              <strong>Coverage Gap:</strong> NHIS enrollment takes 6-8 weeks after arrival, creating a coverage gap.<br/>
+              <strong>Requirement:</strong> You must have private health insurance for the first 2-3 months in Korea.
+            </ContentText>
+            
+            <WarningBox>
+              <div className="warning-title">⚠️ Critical Insurance Requirements</div>
+              <div className="warning-content">
+                • Bring proof of temporary health insurance before arrival<br/>
+                • Coverage must be valid from arrival date until NHIS activation<br/>
+                • Minimum coverage: 1 billion KRW for medical expenses<br/>
+                • Failure to provide proof may result in admission rescission
+              </div>
+            </WarningBox>
+            
+            <SubsectionTitle>📱 Managing Your NHIS Account</SubsectionTitle>
+            <StepList>
+              <li><strong>NHIS Card:</strong> Automatically mailed to your registered address</li>
+              <li><strong>Electronic Billing:</strong> Set up email/SMS billing by calling 033-811-2000</li>
+              <li><strong>Automatic Payment:</strong> Link to Korean bank account for convenience</li>
+              <li><strong>Address Changes:</strong> Report to nearest NHIS center immediately</li>
+              <li><strong>Family Coverage:</strong> Add spouse and children under 19 at NHIS office</li>
+            </StepList>
+            
+            <SubsectionTitle>🚫 Consequences of Non-Payment</SubsectionTitle>
+            <ContentText>
+              <strong>Health Benefits:</strong> Suspended until arrears are paid<br/>
+              <strong>Visa Extension:</strong> Blocked if overdue amount exceeds 500,000 KRW<br/>
+              <strong>Legal Status:</strong> May affect your ability to maintain student status
+            </ContentText>
+            
+            <SubsectionTitle>🔄 Insurance Exemption (Rare Cases)</SubsectionTitle>
+            <ContentText>
+              You may apply for NHIS exemption if you have equivalent foreign insurance coverage, but this requires:
+            </ContentText>
+            <StepList>
+              <li>Minimum 1 billion KRW medical coverage</li>
+              <li>Coverage for common diseases and injuries</li>
+              <li>Valid for your entire stay in Korea</li>
+              <li>Application at NHIS Center for Foreign Residents</li>
+              <li>Korean translation of insurance policy required</li>
+            </StepList>
+            
+            <ContactInfo>
+              <div className="contact-title">📞 NHIS Contact Information</div>
+              <div className="contact-item">NHIS Hotline: 033-811-2000 (English, Chinese, Vietnamese, Uzbek)</div>
+              <div className="contact-item">General Inquiry: 1577-1000 (Press 7 for foreign languages)</div>
+              <div className="contact-item">NHIS Website: nhis.or.kr/english</div>
+              <div className="contact-item">Hi Korea Portal: hikorea.go.kr</div>
+            </ContactInfo>
+            
+            <InfoBox>
+              <div className="info-title">💡 Insurance Success Tips</div>
+              <div className="info-content">
+                • Purchase temporary insurance before arriving in Korea<br/>
+                • Set up automatic payment to avoid late fees<br/>
+                • Keep your NHIS card with you at all times<br/>
+                • Register for electronic billing for faster communication<br/>
+                • Report address changes immediately to avoid billing issues<br/>
+                • Use health checkups - they're free and comprehensive
+              </div>
+            </InfoBox>
+          </GuideContent>
+         </>
+       )}
+
+       {id === '5' && (
+         <>
+           {/* Visa Tips Guide */}
+           <GuideContent>
+             <SectionTitle>📋 Visa Information for Korea</SectionTitle>
+             <ContentText>
+               Understanding Korean visa requirements is crucial for international students. Different visa types serve different purposes, and it's essential to obtain the correct visa for your stay in Korea.
+             </ContentText>
+             
+             <SubsectionTitle>🎓 Student Visas (D-2 and D-4)</SubsectionTitle>
+             <ContentText>
+               <strong>D-2 Student Visa:</strong> For degree-seeking students (Bachelor's, Master's, PhD)<br/>
+               <strong>D-4 Korean Language Trainee:</strong> For Korean language course students<br/><br/>
+               <strong>Required Documents:</strong>
+             </ContentText>
+             <StepList>
+               <li>Valid passport (minimum 6 months validity)</li>
+               <li>Completed visa application form</li>
+               <li>Certificate of Admission from Korean university</li>
+               <li>Financial proof (bank statements, scholarship letters)</li>
+               <li>Academic transcripts and diplomas</li>
+               <li>Health certificate and tuberculosis test results</li>
+               <li>Passport photos (3.5cm x 4.5cm)</li>
+             </StepList>
+             
+             <InfoBox>
+               <div className="info-title">💡 Student Visa Tips</div>
+               <div className="info-content">
+                 • Apply at Korean embassy/consulate in your home country<br/>
+                 • Processing time: 5-10 business days<br/>
+                 • D-2 visa allows part-time work (up to 20 hours/week with permit)<br/>
+                 • Cannot change from tourist visa (C-3) to student visa within Korea
+               </div>
+             </InfoBox>
+             
+             <SubsectionTitle>🏢 Work Visas (E-1 to E-7)</SubsectionTitle>
+             <ContentText>
+               Korea offers various work visa categories for different professions:
+             </ContentText>
+             <StepList>
+               <li><strong>E-1 Professor:</strong> University-level teaching and research</li>
+               <li><strong>E-2 Foreign Language Instructor:</strong> English/foreign language teaching</li>
+               <li><strong>E-3 Researcher:</strong> Research work in specialized fields</li>
+               <li><strong>E-4 Technical Instructor:</strong> Technology and natural science experts</li>
+               <li><strong>E-5 Professional:</strong> Licensed professionals (lawyers, doctors, architects)</li>
+               <li><strong>E-6 Arts and Entertainment:</strong> Artists, athletes, entertainers</li>
+               <li><strong>E-7 Special Ability:</strong> Specialized workers with employment contracts</li>
+             </StepList>
+             
+             <SubsectionTitle>🌍 Tourist and Short-term Visas</SubsectionTitle>
+             <ContentText>
+               <strong>Visa-Free Entry:</strong> Many countries have visa-free agreements with Korea for stays up to 90 days<br/>
+               <strong>C-3 Short-term Visit:</strong> For tourism, business, family visits (90 days maximum)
+             </ContentText>
+             
+             <WarningBox>
+               <div className="warning-title">⚠️ Important Visa Warnings</div>
+               <div className="warning-content">
+                 • Never work on a tourist visa - this is illegal<br/>
+                 • Cannot change visa status without leaving Korea (except specific cases)<br/>
+                 • Overstaying your visa results in fines and entry bans<br/>
+                 • Always carry your passport and Alien Registration Card
+               </div>
+             </WarningBox>
+             
+             <SubsectionTitle>🔄 Visa Extensions and Changes</SubsectionTitle>
+             <StepList>
+               <li><strong>Extension Applications:</strong> Apply 2 months before expiration</li>
+               <li><strong>Required Documents:</strong> Application form, passport, financial proof, reason for extension</li>
+               <li><strong>Processing Location:</strong> Immigration office in your area</li>
+               <li><strong>Fees:</strong> Vary by visa type (typically 30,000-100,000 KRW)</li>
+             </StepList>
+             
+             <SubsectionTitle>📱 K-ETA (Korea Electronic Travel Authorization)</SubsectionTitle>
+             <ContentText>
+               For visa-free countries, K-ETA may be required for entry. As of 2024, K-ETA requirements are temporarily waived for US citizens until December 31, 2024, but check current requirements before travel.
+             </ContentText>
+             
+             <ContactInfo>
+               <div className="contact-title">📞 Visa and Immigration Contacts</div>
+               <div className="contact-item">Korea Immigration Service: 1345 (Korean, English, Chinese, Japanese)</div>
+               <div className="contact-item">Hi Korea (Immigration Portal): hikorea.go.kr</div>
+               <div className="contact-item">Korea Visa Portal: visa.go.kr</div>
+               <div className="contact-item">Nearest Immigration Office: Find location on hikorea.go.kr</div>
+             </ContactInfo>
+             
+             <InfoBox>
+               <div className="info-title">🎯 Visa Success Tips</div>
+               <div className="info-content">
+                 • Start visa application process early (2-3 months before travel)<br/>
+                 • Ensure all documents are properly translated and notarized<br/>
+                 • Keep copies of all visa documents<br/>
+                 • Register at immigration office within 90 days of arrival<br/>
+                 • Maintain valid visa status throughout your stay
+               </div>
+             </InfoBox>
+           </GuideContent>
+         </>
+       )}
+ 
+     </Container>
   );
 }
 
