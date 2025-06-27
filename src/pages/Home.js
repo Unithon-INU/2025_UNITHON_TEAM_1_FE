@@ -10,15 +10,9 @@ const Container = styled.div`
 
 const Header = styled.div`
   display: flex;
-  justify-content: center;
   align-items: center;
   margin-bottom: 30px;
-  gap: 12px;
-`;
-
-const LogoImage = styled.img`
-  width: 40px;
-  height: auto;
+  position: relative;
 `;
 
 const Title = styled.h1`
@@ -26,6 +20,15 @@ const Title = styled.h1`
   font-weight: 600;
   color: #333;
   margin: 0;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+`;
+
+const LogoImage = styled.img`
+  width: 40px;
+  height: auto;
+  z-index: 1;
 `;
 
 const TabContainer = styled.div`

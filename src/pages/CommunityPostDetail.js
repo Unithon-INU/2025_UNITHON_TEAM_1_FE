@@ -342,7 +342,7 @@ const LoginLink = styled.button`
 const CommunityPostDetail = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const { isLoggedIn, token } = useAuth();
+  const { user, token, refreshTokenFunc, isLoggedIn } = useAuth();
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -359,6 +359,25 @@ const CommunityPostDetail = () => {
     title: '',
     content: ''
   });
+
+  // Fetch comments function - moved inside component
+  const fetchComments = async () => {
+    try {
+      const response = await fetch(`https://unithon1.shop/api/posts/${id}/comments`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setComments(data);
+      }
+    } catch (error) {
+      console.error('Error fetching comments:', error);
+    }
+  };
 
   // Fetch individual post from backend
   useEffect(() => {
@@ -458,61 +477,116 @@ const CommunityPostDetail = () => {
 
   // Fetch comments
   useEffect(() => {
-    const fetchComments = async () => {
-      try {
-        const response = await fetch(`https://unithon1.shop/api/posts/${id}/comments`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          setComments(data);
-        }
-      } catch (error) {
-        console.error('Error fetching comments:', error);
-      }
-    };
-
     if (id) {
       fetchComments();
     }
   }, [id]);
 
   // Handle comment submission
-  const handleCommentSubmit = async () => {
-    if (!isLoggedIn) {
-      alert('Please log in to comment');
+  const handleCommentSubmit = async (e) => {
+    e.preventDefault();
+    if (!comment.trim()) return;
+
+    let authToken = token || localStorage.getItem('token');
+    
+    // Add token validation like in CommunityPost.js
+    if (!user || !authToken) {
+      alert('Please log in to post a comment.');
       navigate('/login');
       return;
     }
-
-    if (!comment.trim()) {
-      alert('Please enter a comment');
+    
+    // Token format validation
+    if (!authToken.includes('.') || authToken.split('.').length !== 3) {
+      console.error('Invalid token format');
+      alert('Invalid authentication token. Please log in again.');
+      navigate('/login');
+      return;
+    }
+    
+    // Token expiration check and refresh
+    try {
+      const tokenParts = authToken.split('.');
+      const payload = JSON.parse(atob(tokenParts[1]));
+      const currentTime = Math.floor(Date.now() / 1000);
+      
+      if (payload.exp <= currentTime + 300) { // 5 minutes before expiration
+        console.log('Token expired or expiring soon, attempting refresh');
+        
+        if (refreshTokenFunc) {
+          const refreshed = await refreshTokenFunc();
+          if (!refreshed) {
+            alert('Your session has expired. Please log in again.');
+            navigate('/login');
+            return;
+          }
+          const newToken = localStorage.getItem('token');
+          if (newToken) {
+            authToken = newToken;
+          }
+        } else {
+          alert('Your session has expired. Please log in again.');
+          navigate('/login');
+          return;
+        }
+      }
+    } catch (error) {
+      console.error('Token validation error:', error);
+      alert('Authentication error. Please log in again.');
+      navigate('/login');
       return;
     }
 
     try {
       setCommentLoading(true);
+      
+      // API 명세에 맞는 요청 body 구성
+      const requestBody = {
+        content: comment.trim(),
+        parentId: 0  // 0이면 댓글, 그 이상이면 답댓글
+      };
+      
+      console.log('Sending comment request:', {
+        url: `https://unithon1.shop/api/posts/${id}/comments`,
+        body: requestBody,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`,
+        }
+      });
+      
       const response = await fetch(`https://unithon1.shop/api/posts/${id}/comments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${authToken}`,
         },
-        body: JSON.stringify({
-          content: comment.trim()
-        })
+        body: JSON.stringify(requestBody)
       });
-
+    
+      console.log('Response status:', response.status);
+      console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+      
       if (!response.ok) {
-        throw new Error('Failed to post comment');
+        let errorText;
+        try {
+          errorText = await response.text();
+          console.log('Error response body:', errorText);
+        } catch (e) {
+          console.log('Could not read error response');
+        }
+        
+        if (response.status === 401) {
+          throw new Error('Authentication required. Please log in.');
+        }
+        throw new Error(`Failed to post comment: ${response.status} - ${errorText || 'Unknown error'}`);
       }
-
+    
       const newComment = await response.json();
-      setComments(prev => [newComment, ...prev]);
+      
+      // Refresh comments to get complete data including nickname
+      await fetchComments();
+      
       setComment('');
       
       // Update post comment count
@@ -522,7 +596,12 @@ const CommunityPostDetail = () => {
       }));
     } catch (error) {
       console.error('Error posting comment:', error);
-      alert('Failed to post comment. Please try again.');
+      if (error.message.includes('Authentication')) {
+        alert('Please log in to post comments.');
+        navigate('/login');
+      } else {
+        alert('Failed to post comment. Please try again.');
+      }
     } finally {
       setCommentLoading(false);
     }
@@ -539,7 +618,7 @@ const CommunityPostDetail = () => {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`, // Add this line
+          'Authorization': `Bearer ${token}`,
         },
       });
       
@@ -614,6 +693,80 @@ const CommunityPostDetail = () => {
       ...prev,
       [field]: value
     }));
+  };
+
+  // Add edit functionality for comments - moved inside component
+  const handleEditComment = async (commentId, newContent) => {
+    let authToken = token || localStorage.getItem('token');
+    
+    if (!user || !authToken) {
+      alert('Please log in to edit comments.');
+      navigate('/login');
+      return;
+    }
+
+    try {
+      const response = await fetch(`https://unithon1.shop/api/posts/${id}/comments/${commentId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`,
+        },
+        body: JSON.stringify({ content: newContent })
+      });
+      
+      if (response.ok) {
+        // Refresh comments
+        fetchComments();
+      } else {
+        throw new Error('Failed to edit comment');
+      }
+    } catch (error) {
+      console.error('Error editing comment:', error);
+      alert('Failed to edit comment. Please try again.');
+    }
+  };
+
+  // Add reply functionality - moved inside component
+  const handleReplyToComment = async (parentCommentId, replyContent) => {
+    if (!replyContent.trim()) return;
+
+    let authToken = token || localStorage.getItem('token');
+    
+    if (!user || !authToken) {
+      alert('Please log in to reply to comments.');
+      navigate('/login');
+      return;
+    }
+
+    try {
+      const requestBody = {
+        content: replyContent.trim(),
+        parentId: parentCommentId  // 답댓글의 경우 부모 댓글 ID
+      };
+      
+      const response = await fetch(`https://unithon1.shop/api/posts/${id}/comments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`,
+        },
+        body: JSON.stringify(requestBody)
+      });
+    
+      if (!response.ok) {
+        throw new Error(`Failed to post reply: ${response.status}`);
+      }
+    
+      const newReply = await response.json();
+      
+      // 댓글 목록 새로고침
+      await fetchComments();
+      
+    } catch (error) {
+      console.error('Error posting reply:', error);
+      alert('Failed to post reply. Please try again.');
+    }
   };
 
   if (loading) {
@@ -713,10 +866,10 @@ const CommunityPostDetail = () => {
             <CommentCard key={comment.id}>
               <CommentHeader>
                 <CommentAvatar color={getAvatarColor(comment.nickname)}>
-                  {comment.nickname.charAt(0).toUpperCase()}
+                  {comment.nickname ? comment.nickname.charAt(0).toUpperCase() : '?'}
                 </CommentAvatar>
                 <CommentInfo>
-                  <CommentUsername>{comment.nickname}</CommentUsername>
+                  <CommentUsername>{comment.nickname || 'Anonymous'}</CommentUsername>
                   <CommentTime>{formatDate(comment.createdAt)}</CommentTime>
                 </CommentInfo>
               </CommentHeader>
@@ -768,17 +921,27 @@ const CommunityPostDetail = () => {
 // Helper functions (same as in Community.js)
 const getAvatarColor = (nickname) => {
   const colors = ['#FF6B6B', '#F3E5F5', '#E8F5E8', '#FFF3E0', '#E3F2FD'];
+  // Add null/undefined check
+  if (!nickname || typeof nickname !== 'string') {
+    return colors[0]; // Return default color
+  }
   return colors[nickname.length % colors.length];
 };
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
+  // UTC 시간에 9시간(한국 시간대) 추가
+  const koreaTime = new Date(date.getTime() + (9 * 60 * 60 * 1000));
+  
   const now = new Date();
-  const diffInHours = Math.floor((now - date) / (1000 * 60 * 60));
+  const koreaNow = new Date(now.getTime() + (9 * 60 * 60 * 1000));
+  
+  const diffInHours = Math.floor((koreaNow - koreaTime) / (1000 * 60 * 60));
   
   if (diffInHours < 1) return 'Just now';
   if (diffInHours < 24) return `${diffInHours} hours ago`;
   if (diffInHours < 48) return '1 day ago';
   return `${Math.floor(diffInHours / 24)} days ago`;
 };
+
 export default CommunityPostDetail;
