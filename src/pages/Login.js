@@ -287,8 +287,8 @@ const Login = () => {
     <Container>
       <LoginCard>
         <Logo>
-          <LogoImage src="/assets/images/logo.png" alt="UniBus Logo" />
-          <LogoText>UniBus</LogoText>
+          <LogoImage src="https://unithon1-bucket.s3.ap-northeast-2.amazonaws.com/UniBus_logo.png" alt="UniBus Logo" />
+          <LogoText>Unibus</LogoText>
           <Subtitle>Welcome back! Please sign in to your account.</Subtitle>
         </Logo>
 

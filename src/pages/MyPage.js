@@ -1,4 +1,3 @@
-// Add useEffect import
 import React, { useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -225,7 +224,7 @@ const EditModal = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 1100;
 `;
 
 const ModalContent = styled.div`
@@ -292,7 +291,6 @@ const CancelButton = styled(ModalButton)`
   }
 `;
 
-// Add this new styled component for the login prompt
 const LoginPrompt = styled.div`
   display: flex;
   flex-direction: column;
@@ -348,7 +346,6 @@ const LoginButton = styled.button`
   }
 `;
 
-// Add new styled components for footer links
 const FooterSection = styled.div`
   padding: 20px;
   text-align: center;
@@ -386,7 +383,6 @@ const MyPage = () => {
     if (user && user.nickname) {
       setUserName(user.nickname);
     } else if (user && user.email) {
-      // Fallback to email prefix if nickname is not available
       setUserName(user.email.split('@')[0]);
     }
   }, [user]);
@@ -429,14 +425,6 @@ const MyPage = () => {
     setIsEditingName(false);
   }, []);
 
-  // Remove this duplicate function declaration (lines 412-417)
-  // const handleSaveName = useCallback(() => {
-  //   if (tempName.trim()) {
-  //     setUserName(tempName.trim());
-  //   }
-  //   setIsEditingName(false);
-  // }, [tempName]);
-
   const handleLogout = useCallback(() => {
     logout();
     navigate('/');
@@ -477,7 +465,6 @@ const MyPage = () => {
           <ArrowBackIcon />
         </BackButton>
         <Title>My Page</Title>
-        {/* Remove the SettingsButton */}
       </Header>
 
       <ProfileSection>
@@ -495,19 +482,9 @@ const MyPage = () => {
         </ProfileHeader>
 
         <ProfileDetails>
-          <DetailItem>
-            <DetailIcon>
-              <SchoolIcon />
-            </DetailIcon>
-            <DetailContent>
-              <DetailLabel>University</DetailLabel>
-              <DetailValue>Incheon National University</DetailValue>
-            </DetailContent>
-          </DetailItem>
+          {/* University section removed */}
         </ProfileDetails>
       </ProfileSection>
-
-      {/* Remove the Settings MenuSection completely */}
 
       <MenuSection>
         <MenuItem onClick={handleLogout}>
@@ -522,7 +499,6 @@ const MyPage = () => {
         </MenuItem>
       </MenuSection>
 
-      {/* Add footer with policy links */}
       <FooterSection>
         <FooterLink onClick={() => navigate('/privacy-policy')}>
           Privacy Policy
@@ -559,3 +535,104 @@ const MyPage = () => {
 };
 
 export default MyPage;
+
+const SearchModalContent = styled.div`
+  background: white;
+  border-radius: 12px;
+  margin: 20px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+`;
+
+const SearchHeader = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #E0E0E0;
+`;
+
+const SearchTitle = styled.h3`
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+  flex: 1;
+`;
+
+const CloseButton = styled.button`
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #757575;
+  
+  &:hover {
+    color: #333;
+  }
+`;
+
+const SearchInputContainer = styled.div`
+  position: relative;
+  padding: 20px;
+  border-bottom: 1px solid #E0E0E0;
+`;
+
+const SearchInput = styled.input`
+  width: 100%;
+  padding: 12px 16px 12px 48px;
+  border: 1px solid #E0E0E0;
+  border-radius: 8px;
+  font-size: 16px;
+  
+  &:focus {
+    outline: none;
+    border-color: #2196F3;
+  }
+`;
+
+const SearchIconContainer = styled.div`
+  position: absolute;
+  left: 36px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #757575;
+`;
+
+const UniversityList = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  max-height: 400px;
+`;
+
+const UniversityItem = styled.div`
+  padding: 16px 20px;
+  cursor: pointer;
+  border-bottom: 1px solid #F0F0F0;
+  
+  &:hover {
+    background: #F5F5F5;
+  }
+  
+  &:last-child {
+    border-bottom: none;
+  }
+`;
+
+const UniversityName = styled.div`
+  font-size: 16px;
+  color: #333;
+  font-weight: 500;
+`;
+
+const NoResults = styled.div`
+  padding: 40px 20px;
+  text-align: center;
+  color: #757575;
+  font-size: 16px;
+`;

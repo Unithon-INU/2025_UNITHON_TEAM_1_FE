@@ -303,7 +303,7 @@ const Home = () => {
   return (
     <Container>
       <Header>
-        <LogoImage src="/assets/images/logo.png" alt="UniBus Logo" />
+        <LogoImage src="https://unithon1-bucket.s3.ap-northeast-2.amazonaws.com/UniBus_logo.png" alt="UniBus Logo" />
         <Title>Home</Title>
       </Header>
 

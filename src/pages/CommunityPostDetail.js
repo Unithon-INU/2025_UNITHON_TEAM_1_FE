@@ -112,6 +112,16 @@ const PostContent = styled.p`
   margin: 0 0 24px 0;
 `;
 
+const PostImage = styled.img`
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  margin: 16px 0 24px 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  object-fit: cover;
+`;
+
 const PostActions = styled.div`
   display: flex;
   align-items: center;
@@ -302,15 +312,14 @@ const CommunityPostDetail = () => {
   const [likes, setLikes] = useState(0);
   const [comments, setComments] = useState([]);
   const [commentLoading, setCommentLoading] = useState(false);
-  const [isEditing, setIsEditing] = useState(false); // Add this line
-  
+  const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
     category: '',
     title: '',
     content: ''
   });
 
-  // Fetch comments function - moved inside component
+  // Fetch comments function
   const fetchComments = async () => {
     try {
       const response = await fetch(`https://unithon1.shop/api/posts/${id}/comments`, {
@@ -645,7 +654,7 @@ const CommunityPostDetail = () => {
     }));
   };
 
-  // Add edit functionality for comments - moved inside component
+  // Add edit functionality for comments
   const handleEditComment = async (commentId, newContent) => {
     let authToken = token || localStorage.getItem('token');
     
@@ -677,7 +686,7 @@ const CommunityPostDetail = () => {
     }
   };
 
-  // Add reply functionality - moved inside component
+  // Add reply functionality
   const handleReplyToComment = async (parentCommentId, replyContent) => {
     if (!replyContent.trim()) return;
 
@@ -785,7 +794,10 @@ const CommunityPostDetail = () => {
         <CategoryTag>{post.category}</CategoryTag>
         <PostTitle>{post.title}</PostTitle>
         <PostContent>{post.content}</PostContent>
-
+        {post.imageUrl && (
+          <PostImage src={post.imageUrl} alt="Post image" />
+        )}
+        
         <PostActions>
           <ActionButton 
             onClick={handleLike} 

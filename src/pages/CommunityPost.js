@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import {
   ArrowBack as ArrowBackIcon,
   Photo as PhotoIcon,
+  Close as CloseIcon,
 } from '@mui/icons-material';
 
 const Container = styled.div`
@@ -196,13 +197,54 @@ const CharacterCount = styled.div`
   color: #666;
 `;
 
+// Add new styled components for image upload
+const ImageUploadContainer = styled.div`
+  margin: 16px 0;
+`;
+
+const ImagePreview = styled.div`
+  position: relative;
+  display: inline-block;
+  margin-bottom: 16px;
+`;
+
+const PreviewImage = styled.img`
+  max-width: 100%;
+  max-height: 200px;
+  border-radius: 8px;
+  border: 1px solid #E0E0E0;
+`;
+
+const RemoveImageButton = styled.button`
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+`;
+
+const HiddenFileInput = styled.input`
+  display: none;
+`;
+
 const CommunityPost = () => {
   const navigate = useNavigate();
   const { user, token, refreshTokenFunc } = useAuth();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [category, setCategory] = useState('HOUSING'); // Changed from 'GENERAL' to 'HOUSING'
+  const [category, setCategory] = useState('HOUSING');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
   const categories = [
     { value: 'HOUSING', label: 'Housing' },
@@ -210,27 +252,55 @@ const CommunityPost = () => {
     { value: 'STUDY', label: 'Study' },
     { value: 'SOCIAL', label: 'Social' },
     { value: 'HELP', label: 'Help' }
-  ]; // Removed the 'GENERAL' option since it doesn't exist
+  ];
 
-  // Get the user nickname from the auth context
   const userNickname = user?.nickname || 'User';
-
-  // Define canPost condition
   const canPost = title.trim() && content.trim() && category && !isSubmitting;
+
+  // Handle image selection
+  const handleImageSelect = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      // Check file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('Image size must be less than 5MB');
+        return;
+      }
+      
+      // Check file type
+      if (!file.type.startsWith('image/')) {
+        alert('Please select an image file');
+        return;
+      }
+      
+      setSelectedImage(file);
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setImagePreview(e.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Remove selected image
+  const handleRemoveImage = () => {
+    setSelectedImage(null);
+    setImagePreview(null);
+  };
 
   const handlePost = async () => {
     if (!canPost) return;
     
     let authToken = token || localStorage.getItem('token');
     
-    // 토큰 유효성 검사 추가
     if (!user || !authToken) {
       alert('Please log in to create a post.');
       navigate('/login');
       return;
     }
     
-    // 토큰 형식 검증
     if (!authToken.includes('.') || authToken.split('.').length !== 3) {
       console.error('Invalid token format');
       alert('Invalid authentication token. Please log in again.');
@@ -238,17 +308,14 @@ const CommunityPost = () => {
       return;
     }
     
-    // 토큰 만료 확인 및 갱신 시도
     try {
       const tokenParts = authToken.split('.');
       const payload = JSON.parse(atob(tokenParts[1]));
       const currentTime = Math.floor(Date.now() / 1000);
       
-      // 토큰이 만료되었거나 만료 임박한 경우
-      if (payload.exp <= currentTime + 300) { // 5분 이내 만료 예정
+      if (payload.exp <= currentTime + 300) {
         console.log('Token expired or expiring soon, attempting refresh');
         
-        // refreshTokenFunc 사용
         if (refreshTokenFunc) {
           const refreshed = await refreshTokenFunc();
           if (!refreshed) {
@@ -256,7 +323,6 @@ const CommunityPost = () => {
             navigate('/login');
             return;
           }
-          // 토큰 갱신 성공 시 새 토큰 사용
           const newToken = localStorage.getItem('token');
           if (newToken) {
             authToken = newToken;
@@ -277,37 +343,32 @@ const CommunityPost = () => {
     setIsSubmitting(true);
     
     try {
-      // Fix: Ensure category is a single value, not concatenated
-      const requestData = {
-        title: title.trim(),
-        content: content.trim(),
-        category: category // This should be a single value like 'HOUSING', not 'HOUSING/JOBS/STUDY/SOCIAL/HELP'
-      };
+      // Create FormData for multipart/form-data
+      const formData = new FormData();
       
-      // Add validation to ensure category is valid
-      const validCategories = categories.map(cat => cat.value);
-      if (!validCategories.includes(requestData.category)) {
-        alert('Please select a valid category.');
-        setIsSubmitting(false);
-        return;
+      // Add query parameters to URL
+      const url = new URL('https://unithon1.shop/api/posts');
+      url.searchParams.append('category', category);
+      url.searchParams.append('title', title.trim());
+      url.searchParams.append('content', content.trim());
+      
+      // Add image if selected
+      if (selectedImage) {
+        formData.append('image', selectedImage);
       }
       
-      console.log('Request Data:', requestData); // Debug log
-      
-      const response = await fetch('https://unithon1.shop/api/posts', {
+      const response = await fetch(url.toString(), {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${authToken}`
+          // Don't set Content-Type for FormData, let browser set it
         },
-        body: JSON.stringify(requestData)
+        body: formData
       });
       
-      // 응답 정보 로깅
-      console.log('=== 응답 정보 ===');
+      console.log('=== Response Info ===');
       console.log('Status:', response.status);
       console.log('Status Text:', response.statusText);
-      console.log('Headers:', Object.fromEntries(response.headers.entries()));
       
       if (!response.ok) {
         let errorText;
@@ -329,43 +390,17 @@ const CommunityPost = () => {
       
       navigate('/community');
     } catch (error) {
-      console.error('게시글 생성 실패:', error);
+      console.error('Post creation failed:', error);
       if (error.message.includes('Authentication')) {
-        alert('로그인이 필요합니다.');
+        alert('Login required.');
         navigate('/login');
       } else {
-        alert(`게시글 생성에 실패했습니다: ${error.message}`);
+        alert(`Failed to create post: ${error.message}`);
       }
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  // Remove the entire useEffect that was trying to fetch user nickname
-  // useEffect(() => {
-  //   const fetchUserNickname = async (authToken) => {
-  //     try {
-  //       // 기존: const response = await fetch(`https://unithon1.shop/api/members/${user.id}`, {
-  //       const response = await fetch('https://unithon1.shop/api/members/me', {
-  //         method: 'GET',
-  //         headers: {
-  //           'Authorization': `Bearer ${authToken}`,
-  //           'Content-Type': 'application/json'
-  //         }
-  //       });
-  //   
-  //       if (response.ok) {
-  //         const userData = await response.json();
-  //         return userData.nickname;
-  //       }
-  //       return null;
-  //     } catch (error) {
-  //       console.error('Error fetching user nickname:', error);
-  //       return null;
-  //     }
-  //   };
-  //   fetchUserNickname();
-  // }, [user]);
 
   return (
     <Container>
@@ -417,15 +452,33 @@ const CommunityPost = () => {
           onChange={(e) => setContent(e.target.value)}
           maxLength={1000}
         />
+        
+        {/* Image Upload Section */}
+        <ImageUploadContainer>
+          {imagePreview && (
+            <ImagePreview>
+              <PreviewImage src={imagePreview} alt="Preview" />
+              <RemoveImageButton onClick={handleRemoveImage}>
+                <CloseIcon fontSize="small" />
+              </RemoveImageButton>
+            </ImagePreview>
+          )}
+        </ImageUploadContainer>
       </Content>
 
       <Divider />
 
       <ActionsBar>
-        <ActionButton>
+        <ActionButton onClick={() => document.getElementById('image-upload').click()}>
           <PhotoIcon fontSize="small" />
           Photo
         </ActionButton>
+        <HiddenFileInput
+          id="image-upload"
+          type="file"
+          accept="image/*"
+          onChange={handleImageSelect}
+        />
         
         <CharacterCount>
           {content.length}/1000
