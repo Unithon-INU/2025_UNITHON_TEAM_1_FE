@@ -228,6 +228,7 @@ const JobsPostDetail = () => {
     {
       "title": "Solder Paste Technology Developer",
       "company": "엠케이전자",
+      "logo": "https://dw42ybivffkam.cloudfront.net/0d0725c0-6762-42a5-9955-ede5e6e849c3.jpeg?format=auto&width=1920&quality=100",
       "jobField": "R&D",
       "type": "Temporary",
       "visa": "E1~E7",
@@ -257,6 +258,7 @@ const JobsPostDetail = () => {
     {
       "title": "Recruitment for Samji Electronics Signal Processing Team",
       "company": "삼지전자",
+      "logo": "https://dw42ybivffkam.cloudfront.net/8d2d9b78-d325-4d5f-af08-0270e53b7b63.png?format=auto&width=1920&quality=100",
       "jobField": "Etc",
       "type": "Full Time",
       "visa": "Employment Visa (E1~E7)",
@@ -285,6 +287,7 @@ const JobsPostDetail = () => {
     {
       "title": "Recruiting new and experienced embedded developers (foreigners welcome to apply)",
       "company": "주식회사 스템온",
+      "logo": "https://dw42ybivffkam.cloudfront.net/6f12a921-6b4c-4784-a182-723fd71abb90.png?format=auto&width=1920&quality=100",
       "jobField": "IT",
       "type": "Full Time",
       "visa": "Employment Visa (E1~E7), Job Seeking Visa (D10), Residence (F2), Overseas Korean (F4), Permanent Residence (F5), International Marriage (F6)",
@@ -309,6 +312,7 @@ const JobsPostDetail = () => {
     {
       "title": "Global Business Development Manager (US RTM Market)",
       "company": "주식회사 엑소시스템즈",
+      "logo": "https://dw42ybivffkam.cloudfront.net/2e1cfad9-e1e0-48f7-8ee3-6d69a82c19ca.png?format=auto&width=1920&quality=100",
       "jobField": "Marketing/Ads",
       "type": "Full Time",
       "visa": "Employment Visa (E1~E7), International Marriage (F6), Residence (F2), Overseas Korean (F4), Permanent Residence (F5)",
@@ -335,6 +339,7 @@ const JobsPostDetail = () => {
     {
       "title": "English-Speaking Influencer Marketing Intern",
       "company": "(주)어댑트",
+      "logo": "https://dw42ybivffkam.cloudfront.net/fc0b4940-40bb-47bd-b480-19346ad90543.png?format=auto&width=1920&quality=100",
       "jobField": "Marketing/Ads",
       "type": "Intern",
       "visa": "D10, E1~E7, F1, F2, F3, F4, F5, F6",
@@ -430,7 +435,11 @@ const JobsPostDetail = () => {
       <Content>
         <JobHeader>
           <CompanyLogo>
-            {jobData.company.split(' ').map(word => word[0]).join('').slice(0, 2)}
+            {jobData.logo ? (
+              <img src={jobData.logo} alt={jobData.company} />
+            ) : (
+              jobData.company.split(' ').map(word => word[0]).join('').slice(0, 2)
+            )}
           </CompanyLogo>
           <JobTitle>{jobData.title}</JobTitle>
           <CompanyName>{jobData.company}</CompanyName>
