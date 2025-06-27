@@ -419,14 +419,7 @@ const Jobs = () => {
           <ArrowBackIcon />
         </BackButton>
         <Title>Job Career</Title>
-        <HeaderActions>
-          <IconButton>
-            <SearchIcon />
-          </IconButton>
-          <IconButton>
-            <FilterIcon />
-          </IconButton>
-        </HeaderActions>
+        {/* Removed HeaderActions section with search and filter buttons */}
       </Header>
 
       <FilterContainer>
