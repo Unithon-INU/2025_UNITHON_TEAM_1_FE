@@ -803,9 +803,6 @@ const CommunityPostDetail = () => {
             <CommentIcon />
             {post.commentCount}
           </ActionButton>
-          <ActionButton>
-            <ShareIcon />
-          </ActionButton>
         </PostActions>
 
         <CommentsSection>

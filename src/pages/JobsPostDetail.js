@@ -200,8 +200,8 @@ const ContactIcon = styled.div`
 const ApplyButton = styled.button`
   position: fixed;
   bottom: 80px;
-  left: 40px;
-  right: 40px;
+  left: 30px;
+  right: 30px;
   padding: 16px;
   background: #2196F3;
   color: white;
@@ -327,12 +327,6 @@ const JobsPostDetail = () => {
         <QuickInfo>
           <InfoItem>
             <InfoIcon>
-              <MoneyIcon fontSize="small" />
-            </InfoIcon>
-            {job.salary}
-          </InfoItem>
-          <InfoItem>
-            <InfoIcon>
               <LocationIcon fontSize="small" />
             </InfoIcon>
             {job.location}
@@ -403,9 +397,6 @@ const JobsPostDetail = () => {
         </ContactSection>
       </Content>
 
-      <ApplyButton onClick={handleApply}>
-        Apply Now
-      </ApplyButton>
     </Container>
   );
 };
