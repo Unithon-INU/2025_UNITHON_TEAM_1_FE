@@ -302,7 +302,7 @@ const JobsPostDetail = () => {
 
   const handleApply = () => {
     // Handle job application
-    alert(`Application submitted for ${job.title}! The employer will contact you soon.`);
+    alert(`This function will be adding soon!`);
   };
 
   return (

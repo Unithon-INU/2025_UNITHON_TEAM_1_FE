@@ -904,3 +904,6 @@ const formatDate = (dateString) => {
 };
 
 export default CommunityPostDetail;
+
+// Note: The backend should automatically create notifications when comments are posted
+// based on the API specification. No additional frontend code needed for notification creation.

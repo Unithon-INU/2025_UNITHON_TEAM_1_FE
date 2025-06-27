@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { useAuth } from '../contexts/AuthContext';
+import {
+  Notifications as NotificationsIcon,
+  Close as CloseIcon,
+} from '@mui/icons-material';
 
 const Container = styled.div`
   padding: 20px;
@@ -11,6 +16,7 @@ const Container = styled.div`
 const Header = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: 30px;
   position: relative;
 `;
@@ -31,6 +37,153 @@ const LogoImage = styled.img`
   z-index: 1;
 `;
 
+const NotificationButton = styled.button`
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+  
+  &:hover {
+    background-color: #f5f5f5;
+  }
+`;
+
+const NotificationBadge = styled.div`
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 12px;
+  height: 12px;
+  background-color: #f44336;
+  border-radius: 50%;
+  border: 2px solid white;
+`;
+
+const NotificationModal = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001; // Changed from 1000 to 1001
+`;
+
+const NotificationContent = styled.div`
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 80vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+`;
+
+const NotificationHeader = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  border-bottom: 1px solid #e0e0e0;
+`;
+
+const NotificationTitle = styled.h2`
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+`;
+
+const CloseButton = styled.button`
+  background: none;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &:hover {
+    background-color: #f5f5f5;
+  }
+`;
+
+const NotificationList = styled.div`
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+`;
+
+const NotificationItem = styled.div`
+  padding: 16px 20px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  background-color: ${props => props.isRead ? 'white' : '#f8f9fa'};
+  transition: background-color 0.3s ease;
+  
+  &:hover {
+    background-color: #f5f5f5;
+  }
+  
+  &:last-child {
+    border-bottom: none;
+  }
+`;
+
+const NotificationSender = styled.div`
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 4px;
+`;
+
+const NotificationMessage = styled.div`
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 8px;
+`;
+
+const NotificationTime = styled.div`
+  font-size: 12px;
+  color: #999;
+`;
+
+const EmptyNotifications = styled.div`
+  padding: 40px 20px;
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+`;
+
+const MarkAllReadButton = styled.button`
+  background: #2196f3;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  
+  &:hover {
+    background: #1976d2;
+  }
+  
+  &:disabled {
+    background: #e0e0e0;
+    cursor: not-allowed;
+  }
+`;
 
 const SectionTitle = styled.h2`
   font-size: 18px;
@@ -153,8 +306,6 @@ const ClubDescription = styled.p`
   margin: 0;
 `;
 
-
-
 const LoadingText = styled.div`
   text-align: center;
   color: #757575;
@@ -163,10 +314,15 @@ const LoadingText = styled.div`
 
 const Home = () => {
   const navigate = useNavigate();
+  const { user, token, isLoggedIn } = useAuth();
   const [topPosts, setTopPosts] = useState([]);
   const [topClubs, setTopClubs] = useState([]);
   const [topJobs, setTopJobs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
+  const [notificationLoading, setNotificationLoading] = useState(false);
 
   // Helper function to get avatar color
   const getAvatarColor = (nickname) => {
@@ -192,6 +348,150 @@ const Home = () => {
     const localLikes = allPostLikes[post.id.toString()] || 0;
     return post.likeCount + localLikes;
   };
+
+  // Fetch notification summary
+  const fetchNotificationSummary = async () => {
+    if (!isLoggedIn || !token) return;
+    
+    try {
+      const response = await fetch('https://unithon1.shop/api/notifications/summary', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setHasUnreadNotifications(data.hasUnread);
+      }
+    } catch (error) {
+      console.error('Error fetching notification summary:', error);
+    }
+  };
+
+  // Fetch notifications
+  const fetchNotifications = async () => {
+    if (!isLoggedIn || !token) return;
+    
+    try {
+      setNotificationLoading(true);
+      const response = await fetch('https://unithon1.shop/api/notifications', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setNotifications(data);
+      }
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+    } finally {
+      setNotificationLoading(false);
+    }
+  };
+
+  // Mark notification as read
+  const markNotificationAsRead = async (notificationId) => {
+    if (!isLoggedIn || !token) return;
+    
+    try {
+      const response = await fetch(`https://unithon1.shop/api/notifications/${notificationId}/read`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      
+      if (response.ok) {
+        // Update local state
+        setNotifications(prev => 
+          prev.map(notif => 
+            notif.id === notificationId 
+              ? { ...notif, isRead: true }
+              : notif
+          )
+        );
+        // Refresh summary
+        fetchNotificationSummary();
+      }
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+    }
+  };
+
+  // Mark all notifications as read
+  const markAllNotificationsAsRead = async () => {
+    if (!isLoggedIn || !token) return;
+    
+    try {
+      const response = await fetch('https://unithon1.shop/api/notifications/read-all', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      
+      if (response.ok) {
+        // Update local state
+        setNotifications(prev => 
+          prev.map(notif => ({ ...notif, isRead: true }))
+        );
+        setHasUnreadNotifications(false);
+      }
+    } catch (error) {
+      console.error('Error marking all notifications as read:', error);
+    }
+  };
+
+  // Handle notification click
+  const handleNotificationClick = async (notification) => {
+    // Mark as read if not already read
+    if (!notification.isRead) {
+      await markNotificationAsRead(notification.id);
+    }
+    
+    // Navigate to the post
+    if (notification.postId) {
+      setShowNotifications(false);
+      navigate(`/community/post/${notification.postId}`);
+    }
+  };
+
+  // Handle notification button click
+  const handleNotificationButtonClick = () => {
+    if (!isLoggedIn) {
+      alert('Please log in to view notifications');
+      navigate('/login');
+      return;
+    }
+    
+    setShowNotifications(true);
+    fetchNotifications();
+    
+    // Remove red indicator when opening notifications
+    if (hasUnreadNotifications) {
+      setHasUnreadNotifications(false);
+    }
+  };
+
+  // Fetch notification summary on component mount and periodically
+  useEffect(() => {
+    if (isLoggedIn) {
+      fetchNotificationSummary();
+      
+      // Poll for new notifications every 30 seconds
+      const interval = setInterval(fetchNotificationSummary, 30000);
+      return () => clearInterval(interval);
+    }
+  }, [isLoggedIn, token]);
 
   // Fetch top 3 most liked posts
   useEffect(() => {
@@ -224,7 +524,6 @@ const Home = () => {
 
   // Set top 3 clubs from the clubs list
   useEffect(() => {
-    // Top 3 clubs from the clubs list (first 3 clubs)
     const clubs = [
       {
         id: 1,
@@ -263,7 +562,6 @@ const Home = () => {
 
   // Set top 3 jobs from the jobs list
   useEffect(() => {
-    // Top 3 jobs from the jobs list
     const jobs = [
       {
         id: 1,
@@ -305,7 +603,55 @@ const Home = () => {
       <Header>
         <LogoImage src="https://unithon1-bucket.s3.ap-northeast-2.amazonaws.com/UniBus_logo.png" alt="UniBus Logo" />
         <Title>Home</Title>
+        {isLoggedIn && (
+          <NotificationButton onClick={handleNotificationButtonClick}>
+            <NotificationsIcon style={{ fontSize: '24px', color: '#666' }} />
+            {hasUnreadNotifications && <NotificationBadge />}
+          </NotificationButton>
+        )}
       </Header>
+
+      {/* Notification Modal */}
+      {showNotifications && (
+        <NotificationModal onClick={() => setShowNotifications(false)}>
+          <NotificationContent onClick={(e) => e.stopPropagation()}>
+            <NotificationHeader>
+              <NotificationTitle>Notifications</NotificationTitle>
+              <CloseButton onClick={() => setShowNotifications(false)}>
+                <CloseIcon />
+              </CloseButton>
+            </NotificationHeader>
+            
+            <NotificationList>
+              {notificationLoading ? (
+                <LoadingText>Loading notifications...</LoadingText>
+              ) : notifications.length > 0 ? (
+                notifications.map(notification => (
+                  <NotificationItem
+                    key={notification.id}
+                    isRead={notification.isRead}
+                    onClick={() => handleNotificationClick(notification)}
+                  >
+                    <NotificationSender>{notification.senderNickname}</NotificationSender>
+                    <NotificationMessage>{notification.message}</NotificationMessage>
+                    <NotificationTime>{formatDate(notification.createdAt)}</NotificationTime>
+                  </NotificationItem>
+                ))
+              ) : (
+                <EmptyNotifications>
+                  No notifications yet
+                </EmptyNotifications>
+              )}
+            </NotificationList>
+            
+            {notifications.some(n => !n.isRead) && (
+              <MarkAllReadButton onClick={markAllNotificationsAsRead}>
+                Mark All as Read
+              </MarkAllReadButton>
+            )}
+          </NotificationContent>
+        </NotificationModal>
+      )}
 
       <SectionTitle>
         Board
