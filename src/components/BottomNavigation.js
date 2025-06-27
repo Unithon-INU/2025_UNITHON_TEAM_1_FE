@@ -14,18 +14,10 @@ const NavContainer = styled.nav`
   max-width: ${NAV_CONSTANTS.MAX_WIDTH}px;
   height: ${NAV_CONSTANTS.HEIGHT}px;
   background-color: ${NAV_CONSTANTS.COLORS.BACKGROUND};
-  border-top: 1px solid ${NAV_CONSTANTS.COLORS.BORDER};
   display: flex;
   justify-content: space-around;
   align-items: center;
   z-index: ${NAV_CONSTANTS.Z_INDEX};
-  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
-  
-  /* 접근성 개선 */
-  &:focus-within {
-    outline: 2px solid ${NAV_CONSTANTS.COLORS.ACTIVE};
-    outline-offset: -2px;
-  }
 `;
 
 const NavItem = styled.button.withConfig({
@@ -39,32 +31,16 @@ const NavItem = styled.button.withConfig({
   border: none;
   cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
   padding: 8px 12px;
-  border-radius: 8px;
   color: ${props => {
     if (props.disabled) return '#BDBDBD';
     return props.active ? NAV_CONSTANTS.COLORS.ACTIVE : NAV_CONSTANTS.COLORS.INACTIVE;
   }};
-  transition: ${NAV_CONSTANTS.TRANSITIONS.COLOR}, ${NAV_CONSTANTS.TRANSITIONS.TRANSFORM};
+  transition: ${NAV_CONSTANTS.TRANSITIONS.COLOR};
   opacity: ${props => props.disabled ? 0.5 : 1};
   min-width: 60px;
   
   &:hover:not(:disabled) {
     color: ${NAV_CONSTANTS.COLORS.ACTIVE};
-    transform: translateY(-2px);
-  }
-  
-  &:focus {
-    outline: 2px solid ${NAV_CONSTANTS.COLORS.ACTIVE};
-    outline-offset: 2px;
-  }
-  
-  &:active:not(:disabled) {
-    transform: translateY(0);
-  }
-  
-  /* 접근성: 고대비 모드 지원 */
-  @media (prefers-contrast: high) {
-    border: 1px solid currentColor;
   }
 `;
 

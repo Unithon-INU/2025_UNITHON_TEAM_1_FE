@@ -199,9 +199,9 @@ const ContactIcon = styled.div`
 
 const ApplyButton = styled.button`
   position: fixed;
-  bottom: 20px;
-  left: 20px;
-  right: 20px;
+  bottom: 80px;
+  left: 40px;
+  right: 40px;
   padding: 16px;
   background: #2196F3;
   color: white;
@@ -211,6 +211,7 @@ const ApplyButton = styled.button`
   font-weight: 600;
   cursor: pointer;
   transition: background 0.3s ease;
+  z-index: 999;
   
   &:hover {
     background: #1976D2;
@@ -290,19 +291,14 @@ const JobsPostDetail = () => {
 
   const job = jobData[id] || jobData[1];
 
-  const handleBookmark = () => {
-    setIsBookmarked(!isBookmarked);
-  };
-
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: job.title,
-        text: `${job.title} at ${job.company}`,
-        url: window.location.href
-      });
-    }
-  };
+  // Remove these imports if no longer needed:
+  // Bookmark as BookmarkIcon,
+  // BookmarkBorder as BookmarkBorderIcon, 
+  // Share as ShareIcon,
+  
+  // Remove these handler functions if they exist:
+  // const handleBookmark = () => { ... }
+  // const handleShare = () => { ... }
 
   const handleApply = () => {
     // Handle job application
@@ -312,22 +308,10 @@ const JobsPostDetail = () => {
   return (
     <Container>
       <Header>
-        <BackButton onClick={() => navigate(-1)}>
+        <BackButton onClick={() => navigate('/jobs')}>
           <ArrowBackIcon />
         </BackButton>
         <Title>Job Details</Title>
-        <ActionButtons>
-          <ActionButton onClick={handleBookmark}>
-            {isBookmarked ? (
-              <BookmarkIcon style={{ color: '#2196F3' }} />
-            ) : (
-              <BookmarkBorderIcon />
-            )}
-          </ActionButton>
-          <ActionButton onClick={handleShare}>
-            <ShareIcon />
-          </ActionButton>
-        </ActionButtons>
       </Header>
 
       <Content>

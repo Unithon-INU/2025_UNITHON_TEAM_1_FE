@@ -280,18 +280,6 @@ const ClubsPost = () => {
           <ArrowBackIcon />
         </BackButton>
         <Title>Club Details</Title>
-        <ActionButtons>
-          <ActionButton onClick={handleFavorite}>
-            {isFavorited ? (
-              <FavoriteIcon style={{ color: '#F44336' }} />
-            ) : (
-              <FavoriteBorderIcon />
-            )}
-          </ActionButton>
-          <ActionButton onClick={handleShare}>
-            <ShareIcon />
-          </ActionButton>
-        </ActionButtons>
       </Header>
 
       <Content>

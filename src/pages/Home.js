@@ -124,8 +124,8 @@ const CategoryTag = styled.span`
 `;
 
 const LikeCount = styled.span`
-  color: #F44336;
-  font-weight: 500;
+  color: #757575;
+  font-weight: 400;
 `;
 
 const ClubCard = styled.div`
@@ -239,6 +239,13 @@ const Home = () => {
     if (diffInHours < 24) return `${diffInHours} hours ago`;
     if (diffInHours < 48) return '1 day ago';
     return `${Math.floor(diffInHours / 24)} days ago`;
+  };
+
+  // Helper function to get total like count
+  const getTotalLikeCount = (post) => {
+    const allPostLikes = JSON.parse(localStorage.getItem('allPostLikes') || '{}');
+    const localLikes = allPostLikes[post.id.toString()] || 0;
+    return post.likeCount + localLikes;
   };
 
   // Fetch top 3 most liked posts
@@ -374,7 +381,7 @@ const Home = () => {
               <PostTitle>{post.title}</PostTitle>
               <PostMeta>
                 <CategoryTag>{post.category}</CategoryTag>
-                <LikeCount>❤️ {post.likeCount}</LikeCount> • {post.commentCount} comments • {formatDate(post.createdAt)}
+                <LikeCount>♡ {getTotalLikeCount(post)}</LikeCount> • {post.commentCount} comments • {formatDate(post.createdAt)}
               </PostMeta>
             </PostContent>
           </PostCard>

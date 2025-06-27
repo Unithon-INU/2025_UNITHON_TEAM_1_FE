@@ -224,6 +224,13 @@ const Community = () => {
 
   const filters = ['All', 'HOUSING', 'JOBS', 'STUDY', 'SOCIAL', 'HELP'];
 
+  // Helper function to get total like count
+  const getTotalLikeCount = (post) => {
+    const allPostLikes = JSON.parse(localStorage.getItem('allPostLikes') || '{}');
+    const localLikes = allPostLikes[post.id.toString()] || 0;
+    return post.likeCount + localLikes;
+  };
+
   // Fetch posts from backend
   useEffect(() => {
     const fetchPosts = async () => {
@@ -281,6 +288,18 @@ const Community = () => {
         <Title>Community</Title>
       </Header>
 
+      <FilterContainer>
+        {filters.map(filter => (
+          <FilterChip
+            key={filter}
+            active={activeFilter === filter}
+            onClick={() => setActiveFilter(filter)}
+          >
+            {filter}
+          </FilterChip>
+        ))}
+      </FilterContainer>
+
       {loading && <div style={{ padding: '20px', textAlign: 'center' }}>Loading posts...</div>}
       {error && <div style={{ padding: '20px', textAlign: 'center', color: 'red' }}>{error}</div>}
       
@@ -299,7 +318,7 @@ const Community = () => {
             <PostTitle>{post.title}</PostTitle>
             <PostContent>{post.content}</PostContent>
             <PostActions>
-              <span>❤️ {post.likeCount}</span>
+              <span>♡ {getTotalLikeCount(post)}</span>
               <span>💬 {post.commentCount}</span>
             </PostActions>
           </PostCard>

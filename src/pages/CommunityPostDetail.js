@@ -139,6 +139,38 @@ const ActionButton = styled.button`
     background: #F5F5F5;
     color: ${props => props.active ? '#F44336' : '#333'};
   }
+  
+  /* Heart animation styles */
+  .heart-icon {
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform-origin: center;
+  }
+  
+  &.liked .heart-icon {
+    animation: heartPulse 0.6s ease-in-out;
+    color: #F44336;
+  }
+  
+  @keyframes heartPulse {
+    0% {
+      transform: scale(1);
+    }
+    15% {
+      transform: scale(1.3);
+    }
+    30% {
+      transform: scale(1.1);
+    }
+    50% {
+      transform: scale(1.4);
+    }
+    70% {
+      transform: scale(1.2);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
 `;
 
 const CommentsSection = styled.div`
@@ -317,6 +349,8 @@ const CommunityPostDetail = () => {
   const [isLiked, setIsLiked] = useState(false);
   const [comment, setComment] = useState('');
   const [likes, setLikes] = useState(0);
+  const [comments, setComments] = useState([]);
+  const [commentLoading, setCommentLoading] = useState(false);
   
   // Add edit state management
   const [isEditing, setIsEditing] = useState(false);
@@ -345,6 +379,11 @@ const CommunityPostDetail = () => {
         const data = await response.json();
         setPost(data);
         setLikes(data.likeCount);
+        
+        // Fetch like status if user is logged in
+        if (isLoggedIn && token) {
+          await fetchLikeStatus();
+        }
       } catch (error) {
         console.error('Error fetching post:', error);
         setError('Failed to load post');
@@ -352,11 +391,142 @@ const CommunityPostDetail = () => {
         setLoading(false);
       }
     };
-
+  
     if (id) {
       fetchPost();
     }
+  }, [id, isLoggedIn, token]);
+
+  // Fetch like status from backend
+  const fetchLikeStatus = async () => {
+    if (!isLoggedIn || !token) return;
+    
+    try {
+      const response = await fetch(`https://unithon1.shop/api/posts/${id}/likes`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        setIsLiked(data.isLiked || false);
+        setLikes(data.totalLikes || data.likeCount || 0);
+      }
+    } catch (error) {
+      console.error('Error fetching like status:', error);
+    }
+  };
+
+  // Handle like functionality with new backend API
+  const handleLike = async () => {
+    if (!isLoggedIn) {
+      alert('Please log in to like posts');
+      navigate('/login');
+      return;
+    }
+  
+    try {
+      const response = await fetch(`https://unithon1.shop/api/posts/${id}/likes`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to toggle like');
+      }
+      
+      // Refresh like status after successful toggle
+      await fetchLikeStatus();
+      
+      // Also update the post object for consistency
+      setPost(prev => ({
+        ...prev,
+        likeCount: likes
+      }));
+      
+    } catch (error) {
+      console.error('Error handling like:', error);
+      alert('Failed to update like status. Please try again.');
+    }
+  };
+
+  // Fetch comments
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const response = await fetch(`https://unithon1.shop/api/posts/${id}/comments`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        if (response.ok) {
+          const data = await response.json();
+          setComments(data);
+        }
+      } catch (error) {
+        console.error('Error fetching comments:', error);
+      }
+    };
+
+    if (id) {
+      fetchComments();
+    }
   }, [id]);
+
+  // Handle comment submission
+  const handleCommentSubmit = async () => {
+    if (!isLoggedIn) {
+      alert('Please log in to comment');
+      navigate('/login');
+      return;
+    }
+
+    if (!comment.trim()) {
+      alert('Please enter a comment');
+      return;
+    }
+
+    try {
+      setCommentLoading(true);
+      const response = await fetch(`https://unithon1.shop/api/posts/${id}/comments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          content: comment.trim()
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to post comment');
+      }
+
+      const newComment = await response.json();
+      setComments(prev => [newComment, ...prev]);
+      setComment('');
+      
+      // Update post comment count
+      setPost(prev => ({
+        ...prev,
+        commentCount: prev.commentCount + 1
+      }));
+    } catch (error) {
+      console.error('Error posting comment:', error);
+      alert('Failed to post comment. Please try again.');
+    } finally {
+      setCommentLoading(false);
+    }
+  };
 
   // Delete post function
   const handleDeletePost = async () => {
@@ -483,18 +653,19 @@ const CommunityPostDetail = () => {
           <ArrowBackIcon />
         </BackButton>
         <Title>Post</Title>
-        {/* Add edit/delete buttons for post owner */}
-        <div style={{ display: 'flex', gap: '8px' }}>
-          <button onClick={handleEditPost} style={{ padding: '4px 8px', fontSize: '12px' }}>
-            Edit
-          </button>
-          <button 
-            onClick={handleDeletePost} 
-            style={{ padding: '4px 8px', fontSize: '12px', background: '#f44336', color: 'white', border: 'none', borderRadius: '4px' }}
-          >
-            Delete
-          </button>
-        </div>
+        {isLoggedIn && (
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button onClick={handleEditPost} style={{ padding: '4px 8px', fontSize: '12px' }}>
+              Edit
+            </button>
+            <button 
+              onClick={handleDeletePost} 
+              style={{ padding: '4px 8px', fontSize: '12px', background: '#f44336', color: 'white', border: 'none', borderRadius: '4px' }}
+            >
+              Delete
+            </button>
+          </div>
+        )}
       </Header>
 
       <Content>
@@ -513,8 +684,16 @@ const CommunityPostDetail = () => {
         <PostContent>{post.content}</PostContent>
 
         <PostActions>
-          <ActionButton onClick={() => setIsLiked(!isLiked)}>
-            {isLiked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+          <ActionButton 
+            onClick={handleLike} 
+            active={isLiked}
+            className={isLiked ? 'liked' : ''}
+          >
+            {isLiked ? (
+              <FavoriteIcon className="heart-icon" style={{ color: '#F44336' }} />
+            ) : (
+              <FavoriteBorderIcon className="heart-icon" />
+            )}
             {likes}
           </ActionButton>
           <ActionButton>
@@ -526,21 +705,62 @@ const CommunityPostDetail = () => {
           </ActionButton>
         </PostActions>
 
-        {/* Comments section would be implemented similarly */}
-        <SectionTitle>Comments ({post.commentCount})</SectionTitle>
-        
-        {/* Comment input */}
+        <CommentsSection>
+          <SectionTitle>Comments ({comments.length})</SectionTitle>
+          
+          {/* Display comments */}
+          {comments.map(comment => (
+            <CommentCard key={comment.id}>
+              <CommentHeader>
+                <CommentAvatar color={getAvatarColor(comment.nickname)}>
+                  {comment.nickname.charAt(0).toUpperCase()}
+                </CommentAvatar>
+                <CommentInfo>
+                  <CommentUsername>{comment.nickname}</CommentUsername>
+                  <CommentTime>{formatDate(comment.createdAt)}</CommentTime>
+                </CommentInfo>
+              </CommentHeader>
+              <CommentText>{comment.content}</CommentText>
+            </CommentCard>
+          ))}
+          
+          {comments.length === 0 && (
+            <div style={{ textAlign: 'center', color: '#757575', padding: '20px' }}>
+              No comments yet. Be the first to comment!
+            </div>
+          )}
+        </CommentsSection>
+      </Content>
+
+      {/* Comment input */}
+      {isLoggedIn ? (
         <CommentInputContainer>
           <CommentInput
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             placeholder="Write a comment..."
+            onKeyPress={(e) => {
+              if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleCommentSubmit();
+              }
+            }}
           />
-          <CommentButton>
+          <CommentButton 
+            onClick={handleCommentSubmit}
+            disabled={commentLoading || !comment.trim()}
+          >
             <SendIcon />
           </CommentButton>
         </CommentInputContainer>
-      </Content>
+      ) : (
+        <LoginPromptComment>
+          <LoginText>Please log in to comment</LoginText>
+          <LoginLink onClick={() => navigate('/login')}>
+            Log In
+          </LoginLink>
+        </LoginPromptComment>
+      )}
     </Container>
   );
 };

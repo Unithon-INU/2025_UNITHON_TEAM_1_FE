@@ -348,6 +348,26 @@ const LoginButton = styled.button`
   }
 `;
 
+// Add new styled components for footer links
+const FooterSection = styled.div`
+  padding: 20px;
+  text-align: center;
+`;
+
+const FooterLink = styled.button`
+  background: none;
+  border: none;
+  color: #999;
+  font-size: 12px;
+  cursor: pointer;
+  margin: 0 8px;
+  text-decoration: underline;
+  
+  &:hover {
+    color: #666;
+  }
+`;
+
 const MyPage = () => {
   const { 
     user, 
@@ -457,9 +477,7 @@ const MyPage = () => {
           <ArrowBackIcon />
         </BackButton>
         <Title>My Page</Title>
-        <SettingsButton>
-          <SettingsIcon />
-        </SettingsButton>
+        {/* Remove the SettingsButton */}
       </Header>
 
       <ProfileSection>
@@ -489,24 +507,7 @@ const MyPage = () => {
         </ProfileDetails>
       </ProfileSection>
 
-      <MenuSection>
-        <SectionTitle>Settings</SectionTitle>
-        {menuItems.map((item, index) => {
-          const Icon = item.icon;
-          return (
-            <MenuItem key={index} onClick={item.onClick}>
-              <MenuIcon color={item.color} iconColor={item.iconColor}>
-                <Icon />
-              </MenuIcon>
-              <MenuContent>
-                <MenuTitle>{item.title}</MenuTitle>
-                <MenuSubtitle>{item.subtitle}</MenuSubtitle>
-              </MenuContent>
-              <ChevronRightIcon color="action" />
-            </MenuItem>
-          );
-        })}
-      </MenuSection>
+      {/* Remove the Settings MenuSection completely */}
 
       <MenuSection>
         <MenuItem onClick={handleLogout}>
@@ -520,6 +521,16 @@ const MyPage = () => {
           <ChevronRightIcon color="action" />
         </MenuItem>
       </MenuSection>
+
+      {/* Add footer with policy links */}
+      <FooterSection>
+        <FooterLink onClick={() => navigate('/privacy-policy')}>
+          Privacy Policy
+        </FooterLink>
+        <FooterLink onClick={() => navigate('/terms-of-service')}>
+          Terms
+        </FooterLink>
+      </FooterSection>
 
       {isEditingName && (
         <EditModal>

@@ -19,6 +19,8 @@ import MyPage from './pages/MyPage';
 import PrivacySecurity from './pages/PrivacySecurity';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
 
 const theme = createTheme({
   palette: {
@@ -70,6 +72,8 @@ function App() {
                 <Route path="/jobs/:id" element={<JobsPostDetail />} />
                 <Route path="/mypage" element={<MyPage />} />
                 <Route path="/privacy-security" element={<PrivacySecurity />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/terms-of-service" element={<TermsOfService />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
               </Routes>
