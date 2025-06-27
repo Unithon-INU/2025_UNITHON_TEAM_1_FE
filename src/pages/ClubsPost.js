@@ -88,6 +88,16 @@ const ClubCategory = styled.div`
   margin-bottom: 16px;
 `;
 
+const ClubLocation = styled.div`
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 16px;
+  padding: 8px 12px;
+  background: #F5F5F5;
+  border-radius: 8px;
+  display: inline-block;
+`;
+
 const ClubDescription = styled.p`
   font-size: 16px;
   line-height: 1.6;
@@ -497,6 +507,9 @@ const ClubsPost = () => {
         <ClubInfo>
           <ClubName>{clubData.name}</ClubName>
           <ClubCategory>{clubData.division}</ClubCategory>
+          {clubData.location && (
+            <ClubLocation>📍 호관: {clubData.location}</ClubLocation>
+          )}
           <ClubDescription>{clubData.summary}</ClubDescription>
           
           <InfoSection>
