@@ -67,7 +67,7 @@ function App() {
                 <Route path="/community/post" element={<CommunityPost />} />
                 <Route path="/community/post/:id" element={<CommunityPostDetail />} />
                 <Route path="/clubs" element={<Clubs />} />
-                <Route path="/clubs/:id" element={<ClubsPost />} />
+                <Route path="/clubs/:clubName" element={<ClubsPost />} />
                 <Route path="/jobs" element={<Jobs />} />
                 <Route path="/jobs/:id" element={<JobsPostDetail />} />
                 <Route path="/mypage" element={<MyPage />} />
