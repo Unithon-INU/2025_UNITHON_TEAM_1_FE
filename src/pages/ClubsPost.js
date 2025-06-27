@@ -508,7 +508,7 @@ const ClubsPost = () => {
           <ClubName>{clubData.name}</ClubName>
           <ClubCategory>{clubData.division}</ClubCategory>
           {clubData.location && (
-            <ClubLocation>📍 호관: {clubData.location}</ClubLocation>
+            <ClubLocation>📍 Building: {clubData.location}</ClubLocation>
           )}
           <ClubDescription>{clubData.summary}</ClubDescription>
           
