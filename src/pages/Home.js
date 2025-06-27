@@ -569,31 +569,32 @@ const Home = () => {
         company: '엠케이전자',
         location: 'Eumseong-gun, Chungcheongbuk-do',
         schedule: 'Temporary',
-        logo: 'https://dw42ybivffkam.cloudfront.net/0d0725c0-6762-42a5-9955-ede5e6e849c3.jpeg?format=auto&width=1920&quality=100',
-        color: '#E3F2FD',
+        logo: 'https://dw42ybivffkam.cloudfront.net/0d0725c0-6762-42a5-9955-ede5e6e849c3.jpeg?format=auto&width=1920&quality=100',           // add company logo URL here
+        color: '',          // add a color hex code here
         category: 'R&D'
       },
       {
         id: 2,
-        title: 'Recruiting foreign service/marketing planning/publisher',
-        company: '(주)전북은행',
-        location: 'Yeongdeungpo-gu, Seoul',
-        schedule: 'Intern',
-        logo: 'https://dw42ybivffkam.cloudfront.net/9cf33b0c-62b6-4251-92eb-4bd181b764c2.png?format=auto&width=1920&quality=100',
-        color: '#E8F5E8',
-        category: 'Marketing/Ads'
-      },
-      {
-        id: 3,
         title: 'Recruitment for Samji Electronics Signal Processing Team',
         company: '삼지전자',
         location: 'Hwaseong-si, Gyeonggi-do',
         schedule: 'Full Time',
-        logo: 'https://dw42ybivffkam.cloudfront.net/8d2d9b78-d325-4d5f-af08-0270e53b7b63.png?format=auto&width=1920&quality=100',
-        color: '#FFF3E0',
+        logo: 'https://dw42ybivffkam.cloudfront.net/8d2d9b78-d325-4d5f-af08-0270e53b7b63.png?format=auto&width=1920&quality=100',           // add company logo URL here
+        color: '',          // add a color hex code here
+        category: 'Etc'
+      },
+      {
+        id: 3,
+        title: 'Recruiting new and experienced embedded developers (foreigners welcome to apply)',
+        company: '주식회사 스템온',
+        location: 'Seongnam-si, Gyeonggi-do',
+        schedule: 'Full Time',
+        logo: 'https://dw42ybivffkam.cloudfront.net/6f12a921-6b4c-4784-a182-723fd71abb90.png?format=auto&width=1920&quality=100',           // add company logo URL here
+        color: '',          // add a color hex code here
         category: 'IT'
-      }
+      },
     ];
+    
     
     setTopJobs(jobs);
   }, []);

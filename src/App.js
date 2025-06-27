@@ -69,13 +69,14 @@ function App() {
                 <Route path="/clubs" element={<Clubs />} />
                 <Route path="/clubs/:clubName" element={<ClubsPost />} />
                 <Route path="/jobs" element={<Jobs />} />
-                <Route path="/jobs/:id" element={<JobsPostDetail />} />
+                <Route path="/jobs/:jobTitle" element={<JobsPostDetail />} />
                 <Route path="/mypage" element={<MyPage />} />
                 <Route path="/privacy-security" element={<PrivacySecurity />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/terms-of-service" element={<TermsOfService />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                
               </Routes>
             </ContentContainer>
             <BottomNavigation />
