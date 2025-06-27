@@ -814,50 +814,6 @@ const Home = () => {
           </GuideCard>
         ))}
       </SectionContainer>
-
-      <SectionContainer>
-        <SectionTitle>
-          Clubs
-          <ViewAllButton onClick={() => navigate('/clubs')}>
-            View All
-          </ViewAllButton>
-        </SectionTitle>
-        {topClubs.map(club => (
-          <ClubCard key={club.id} onClick={() => navigate('/clubs')}>
-            <ClubImage color={club.color}>
-              <span style={{ fontSize: '24px' }}>{club.logo}</span>
-            </ClubImage>
-            <ClubContent>
-              <ClubName>{club.name}</ClubName>
-              <ClubDescription>{club.description}</ClubDescription>
-            </ClubContent>
-          </ClubCard>
-        ))}
-      </SectionContainer>
-
-      <SectionContainer>
-        <SectionTitle>
-          Jobs
-          <ViewAllButton onClick={() => navigate('/jobs')}>
-            View All
-          </ViewAllButton>
-        </SectionTitle>
-        {topJobs.map(job => (
-          <ClubCard key={job.id} onClick={() => navigate('/jobs')}>
-            <ClubImage color={job.color}>
-              {job.logo.startsWith('http') ? (
-                <img src={job.logo} alt={job.company} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }} />
-              ) : (
-                <span style={{ fontSize: '24px' }}>{job.logo}</span>
-              )}
-            </ClubImage>
-            <ClubContent>
-              <ClubName>{job.title}</ClubName>
-              <ClubDescription>{job.company} • {job.location}</ClubDescription>
-            </ClubContent>
-          </ClubCard>
-        ))}
-      </SectionContainer>
     </Container>
   );
 };
