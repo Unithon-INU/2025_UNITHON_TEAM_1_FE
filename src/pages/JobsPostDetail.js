@@ -12,9 +12,6 @@ import {
   Person as PersonIcon,
   Email as EmailIcon,
   Phone as PhoneIcon,
-  Bookmark as BookmarkIcon,
-  BookmarkBorder as BookmarkBorderIcon,
-  Share as ShareIcon,
 } from '@mui/icons-material';
 
 const Container = styled.div`
@@ -53,26 +50,7 @@ const Title = styled.h1`
   flex: 1;
 `;
 
-const ActionButtons = styled.div`
-  display: flex;
-  gap: 8px;
-`;
 
-const ActionButton = styled.button`
-  background: none;
-  border: none;
-  padding: 8px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: background 0.3s ease;
-  
-  &:hover {
-    background: #F5F5F5;
-  }
-`;
 
 const Content = styled.div`
   padding: 20px;
@@ -229,7 +207,6 @@ const ApplyButton = styled.button`
 const JobsPostDetail = () => {
   const navigate = useNavigate();
   const { jobTitle } = useParams();
-  const [isBookmarked, setIsBookmarked] = useState(false);
 
   // Job data array (same as in Jobs.js)
   const jobsData = [
@@ -386,22 +363,7 @@ const JobsPostDetail = () => {
     // navigate('/apply', { state: { job: jobData } });
   };
 
-  const handleBookmark = () => {
-    setIsBookmarked(!isBookmarked);
-  };
 
-  const handleShare = () => {
-    if (navigator.share) {
-      navigator.share({
-        title: jobData?.title,
-        text: `Check out this job: ${jobData?.title} at ${jobData?.company}`,
-        url: window.location.href,
-      });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      alert('Link copied to clipboard!');
-    }
-  };
 
   // Find job by title
   const jobData = jobsData.find(job => job.title === decodeURIComponent(jobTitle));
@@ -430,14 +392,6 @@ const JobsPostDetail = () => {
           <ArrowBackIcon />
         </BackButton>
         <Title>Job Details</Title>
-        <ActionButtons>
-          <ActionButton onClick={handleBookmark}>
-            {isBookmarked ? <BookmarkIcon /> : <BookmarkBorderIcon />}
-          </ActionButton>
-          <ActionButton onClick={handleShare}>
-            <ShareIcon />
-          </ActionButton>
-        </ActionButtons>
       </Header>
 
       <Content>
